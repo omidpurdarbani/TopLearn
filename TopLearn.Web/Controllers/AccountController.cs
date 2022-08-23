@@ -16,7 +16,7 @@ namespace TopLearn.Web.Controllers
             _userService = userService; 
         }
 
-        [Route("Registe")]
+        [Route("Register")]
         public IActionResult Register()
         {
             return View();
