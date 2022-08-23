@@ -13,10 +13,10 @@ namespace TopLearn.Web.Controllers
 
         public AccountController(IUserService userService)
         {
-            _userService = userService;
+            _userService = userService; 
         }
 
-        [Route("Register")]
+        [Route("Registe")]
         public IActionResult Register()
         {
             return View();
