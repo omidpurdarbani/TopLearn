@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TopLearn.Core.Services.Interfaces;
-using TopLearn.Core.Services.Service;
+using TopLearn.Core.Services.Services;
 using TopLearn.DataLayer.Context;
 
 namespace TopLearn.Web

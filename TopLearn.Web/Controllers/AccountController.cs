@@ -2,7 +2,6 @@
 using TopLearn.Core.Convertors;
 using TopLearn.Core.DTOs;
 using TopLearn.Core.Services.Interfaces;
-using TopLearn.DataLayer.Context;
 
 namespace TopLearn.Web.Controllers
 {
@@ -42,7 +41,7 @@ namespace TopLearn.Web.Controllers
                 return View(model);
             }
 
-            //ToDo: Register User
+            //TODO: Register User
 
             return View();
         }

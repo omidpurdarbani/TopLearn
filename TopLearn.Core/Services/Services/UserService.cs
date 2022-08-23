@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using TopLearn.Core.Services.Interfaces;
 using TopLearn.DataLayer.Context;
 
-namespace TopLearn.Core.Services.Service
+namespace TopLearn.Core.Services.Services
 {
     public class UserService : IUserService
     {
