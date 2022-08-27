@@ -1,28 +1,30 @@
 ﻿@model TopLearn.DataLayer.Entities.User.User
 @{
 
-    ViewData["Title"] = "ثبت نام";
+    ViewData["Title"] = "عضویت در سایت";
 
 }
 
 <div class="container">
     <nav aria-label="breadcrumb">
         <ul class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">تاپ لرن</a></li>
-            <li class="breadcrumb-item active" aria-current="page">عضویت در سایت</li>
+            <li class="breadcrumb-item"><a href="/">تاپ لرن</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a asp-action="Register">عضویت در سایت</a></li>
         </ul>
     </nav>
 </div>
 
 <main class="client-page">
-    <div class="container-content">
+    <div class="container-content" style="width: 40vw">
 
-        <div class="alert alert-success">
+        <div class="alert alert-success" style="width: 100%">
 
-            <h2>@Model.UserName عزیز</h2>
-            <p>ثبت نام شما با موفقیت انجام گردید!</p>
-            <p>جهت تایید حساب کاربری خود از طریق لینکی که به آدرس ایمیل @Model.Email ارسال شد , اقدام نمایید .</p>
-
+            <h2 style="font-size: 25px">@Model.UserName عزیز</h2>
+            
+            <div class="text-center">
+                <p style="font-size: 35px">ثبت نام شما با موفقیت انجام گردید!</p>
+                <p style="font-size: 20px">جهت تایید حساب کاربری خود از طریق لینکی که به آدرس ایمیل @Model.Email ارسال شد , اقدام نمایید .</p>
+            </div>
         </div>
 
     </div>

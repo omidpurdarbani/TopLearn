@@ -1,13 +1,15 @@
 ﻿@model TopLearn.Core.DTOs.RegisterViewModel
 @{
-    ViewData["Title"] = "ثبت نام";
+
+    ViewData["Title"] = "عضویت در سایت";
+
 }
 
 <div class="container">
     <nav aria-label="breadcrumb">
         <ul class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">تاپ لرن</a></li>
-            <li class="breadcrumb-item active" aria-current="page">عضویت در سایت</li>
+            <li class="breadcrumb-item"><a href="/">تاپ لرن</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a asp-action="Register">عضویت در سایت</a></li>
         </ul>
     </nav>
 </div>

@@ -69,7 +69,44 @@ namespace TopLearn.Web.Controllers
 
         #region Login
 
-        
+        [Route("Login")]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [Route("Login")]
+        [HttpPost]
+        public IActionResult Login(LoginViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = _userService.LoginUser(model.Email, model.Password);
+
+            if (user!=null)
+            {
+
+                //TODO: Login
+
+                return View("LoginSuccess",user.UserName);
+
+            }
+
+            return View(model);
+        }
+
+        #endregion
+
+        #region Active Account
+
+        public IActionResult ActiveAccount(string id)
+        {
+            User IsActive = _userService.ActiveAccount(id);
+            return View(IsActive);
+        }
 
         #endregion
 
