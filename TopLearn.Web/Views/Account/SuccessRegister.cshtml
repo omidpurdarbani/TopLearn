@@ -1,0 +1,29 @@
+﻿@model TopLearn.DataLayer.Entities.User.User
+@{
+
+    ViewData["Title"] = "ثبت نام";
+
+}
+
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">تاپ لرن</a></li>
+            <li class="breadcrumb-item active" aria-current="page">عضویت در سایت</li>
+        </ul>
+    </nav>
+</div>
+
+<main class="client-page">
+    <div class="container-content">
+
+        <div class="alert alert-success">
+
+            <h2>@Model.UserName عزیز</h2>
+            <p>ثبت نام شما با موفقیت انجام گردید!</p>
+            <p>جهت تایید حساب کاربری خود از طریق لینکی که به آدرس ایمیل @Model.Email ارسال شد , اقدام نمایید .</p>
+
+        </div>
+
+    </div>
+</main>

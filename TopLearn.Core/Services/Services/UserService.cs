@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore.Internal;
+using TopLearn.Core.Generator;
 using TopLearn.Core.Services.Interfaces;
 using TopLearn.DataLayer.Context;
+using TopLearn.DataLayer.Entities.User;
 
 namespace TopLearn.Core.Services.Services
 {
@@ -28,5 +30,13 @@ namespace TopLearn.Core.Services.Services
             return _context.users.Any(p => p.Email == email);
         }
 
+        public int AddUser(User user)
+        {
+
+            _context.users.Add(user);
+            _context.SaveChanges();
+            return user.UserId;
+
+        }
     }
 }

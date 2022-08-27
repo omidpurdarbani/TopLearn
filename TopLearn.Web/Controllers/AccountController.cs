@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using TopLearn.Core.Convertors;
 using TopLearn.Core.DTOs;
+using TopLearn.Core.Generator;
+using TopLearn.Core.Security;
 using TopLearn.Core.Services.Interfaces;
+using TopLearn.DataLayer.Entities.User;
 
 namespace TopLearn.Web.Controllers
 {
@@ -12,8 +16,10 @@ namespace TopLearn.Web.Controllers
 
         public AccountController(IUserService userService)
         {
-            _userService = userService; 
+            _userService = userService;
         }
+
+        #region Register
 
         [Route("Register")]
         public IActionResult Register()
@@ -21,6 +27,7 @@ namespace TopLearn.Web.Controllers
             return View();
         }
 
+        [Route("Register")]
         [HttpPost]
         public IActionResult Register(RegisterViewModel model)
         {
@@ -31,7 +38,7 @@ namespace TopLearn.Web.Controllers
 
             if (_userService.IsExistUserName(model.UserName))
             {
-                ModelState.AddModelError("UserName","نام کاربری معتبر نمی باشد");
+                ModelState.AddModelError("UserName", "نام کاربری معتبر نمی باشد");
                 return View(model);
             }
 
@@ -41,9 +48,30 @@ namespace TopLearn.Web.Controllers
                 return View(model);
             }
 
-            //TODO: Register User
+            User user = new User()
+            {
+                ActiveCode = TextGenerator.GenerateUniqCode(),
+                Email = model.Email.FixEmail(),
+                IsActive = false,
+                Password = PasswordHelper.EncodePasswordMd5(model.Password),
+                RegisterDate = DateTime.Now,
+                UserAvatar = "Defult.jpg",
+                UserName = model.UserName
+            };
 
-            return View();
+            _userService.AddUser(user);
+
+            return View("SuccessRegister", user);
+
         }
+
+        #endregion
+
+        #region Login
+
+        
+
+        #endregion
+
     }
 }
