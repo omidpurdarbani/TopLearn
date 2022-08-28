@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using TopLearn.Core.Convertors;
 using TopLearn.Core.DTOs;
@@ -89,13 +93,41 @@ namespace TopLearn.Web.Controllers
             if (user!=null)
             {
 
-                //TODO: Login
+                //Login User
+                var claims = new List<Claim>()
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email)
+                };
+
+                var identity = new ClaimsIdentity(claims,CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var principal = new ClaimsPrincipal(identity);
+
+                var properties = new AuthenticationProperties()
+                {
+                    IsPersistent = model.RememberMe
+                };
+
+                HttpContext.SignInAsync(principal, properties);
 
                 return View("LoginSuccess",user.UserName);
 
             }
 
             return View(model);
+        }
+
+        #endregion
+
+        #region Logout
+
+        [Route("Logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return Redirect("/Login");
         }
 
         #endregion
