@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TopLearn.Core.Convertors;
 using TopLearn.Core.Services.Interfaces;
 using TopLearn.Core.Services.Services;
 using TopLearn.DataLayer.Context;
@@ -56,6 +58,8 @@ namespace TopLearn.Web
             #region IoC
 
             services.AddTransient<IUserService, UserService>();
+
+            services.AddTransient<IViewRenderService, RenderViewToString>();
 
             #endregion
 

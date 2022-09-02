@@ -8,6 +8,7 @@ using TopLearn.Core.Convertors;
 using TopLearn.Core.DTOs;
 using TopLearn.Core.Generator;
 using TopLearn.Core.Security;
+using TopLearn.Core.Senders;
 using TopLearn.Core.Services.Interfaces;
 using TopLearn.DataLayer.Entities.User;
 
@@ -17,11 +18,14 @@ namespace TopLearn.Web.Controllers
     {
 
         private IUserService _userService;
+        private IViewRenderService _viewRenderService;
 
-        public AccountController(IUserService userService)
+        public AccountController(IUserService userService, IViewRenderService viewRenderService)
         {
             _userService = userService;
+            _viewRenderService = viewRenderService; 
         }
+
 
         #region Register
 
@@ -64,6 +68,13 @@ namespace TopLearn.Web.Controllers
             };
 
             _userService.AddUser(user);
+
+            #region Send Activation Email
+
+            string body = _viewRenderService.RenderToStringAsync("_ActiveEmail", user);
+            SendEmail.Send(user.Email,"فعال سازی حساب",body);
+
+            #endregion
 
             return View("SuccessRegister", user);
 
@@ -112,6 +123,8 @@ namespace TopLearn.Web.Controllers
 
                 HttpContext.SignInAsync(principal, properties);
 
+                ViewBag.one = false;
+
                 return View("LoginSuccess",user.UserName);
 
             }
@@ -136,8 +149,35 @@ namespace TopLearn.Web.Controllers
 
         public IActionResult ActiveAccount(string id)
         {
-            User IsActive = _userService.ActiveAccount(id);
-            return View(IsActive);
+            User user = _userService.ActiveAccount(id);
+
+            if (user!=null)
+            {
+                #region Login
+
+                var claims = new List<Claim>()
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email)
+                };
+
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var principal = new ClaimsPrincipal(identity);
+
+                var properties = new AuthenticationProperties()
+                {
+                    IsPersistent = true
+                };
+
+                HttpContext.SignInAsync(principal, properties);
+
+                #endregion
+            }
+
+            
+            return View(user);
         }
 
         #endregion

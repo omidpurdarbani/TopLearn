@@ -2,7 +2,12 @@
 @{
     ViewData["Title"] = "ورود به سایت";
 }
-
+<script>
+    var Delay = 5000;
+    setTimeout(()=>{
+    window.location = "/";
+    },Delay);
+</script>
 <div class="container">
     <nav aria-label="breadcrumb">
         <ul class="breadcrumb">
@@ -13,22 +18,17 @@
 </div>
 
 <main class="client-page">
-    <div class="container-content"  style="width: 40vw">
-        
-        <script>
-            var Delay = 5000;
-            setTimeout(()=>{
-            window.location = "/";
-            },Delay);
-        </script>
+    <div class="container-content" style="width: 40vw">
+
 
         <div class="alert alert-success" style="width: 100%">
 
             <h2 style="font-size: 25px">@Model عزیز</h2>
             <div class="text-center">
                 <p style="font-size: 35px;">ورود شما با موفقیت انجام شد!</p>
-               
-                <h3 style="font-size: 20px">شما پس از لحظاتی به صفحه اصلی وب سایت منتقل خواهید شد</h3>
+                <br />
+                <h3 style="font-size: 25px">شما پس از لحظاتی به صفحه اصلی منتقل خواهید شد</h3>
+                <br />
             </div>
 
         </div>

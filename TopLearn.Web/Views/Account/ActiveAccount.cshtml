@@ -16,23 +16,24 @@
 
 <main class="client-page">
     <div class="container-content" style="width: 40vw">
-        
+
         @if (Model != null)
         {
             <script>
-            var Delay = 5000;
-            setTimeout(()=>{
-            window.location = "/";
-            },Delay);
-        </script>
+                var Delay = 5000;
+                setTimeout(()=>{
+                window.location = "/";
+                },Delay);
+            </script>
             <div class="alert alert-success" style="width: 100%">
 
                 <h2 style="font-size: 25px">@Model.UserName عزیز</h2>
                 <div class="text-center">
                     <p style="font-size: 35px;">حساب کاربری شما با موفقیت فعال شد !</p>
-                    <h3 style="font-size: 20px">شما پس از لحظاتی به صفحه اصلی وب سایت منتقل خواهید شد</h3>
+                    <h3 style="font-size: 25px">ورود شما با موفقیت انجام شد و شما پس از لحظاتی به صفحه اصلی منتقل خواهید شد</h3>
+                    <br />
                 </div>
-                
+
 
             </div>
         }
@@ -40,12 +41,12 @@
         {
             <div class="alert alert-danger" style="width: 100%">
 
-                
+
                 <div class="text-center">
                     <p style="font-size: 25px;">حساب کاربری یافت نشد !</p>
                     <h3 style="font-size: 20px">لینک شما نامعتبر می باشد</h3>
                 </div>
-                
+
 
             </div>
         }
