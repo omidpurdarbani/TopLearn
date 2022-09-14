@@ -17,15 +17,18 @@ namespace TopLearn.Web.Controllers
     public class AccountController : Controller
     {
 
+        #region Constructor injection
+
         private IUserService _userService;
         private IViewRenderService _viewRenderService;
 
         public AccountController(IUserService userService, IViewRenderService viewRenderService)
         {
             _userService = userService;
-            _viewRenderService = viewRenderService; 
+            _viewRenderService = viewRenderService;
         }
 
+        #endregion
 
         #region Register
 
@@ -41,12 +44,6 @@ namespace TopLearn.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
-            }
-
-            if (_userService.IsExistUserName(model.UserName))
-            {
-                ModelState.AddModelError("UserName", "نام کاربری معتبر نمی باشد");
                 return View(model);
             }
 
@@ -76,7 +73,9 @@ namespace TopLearn.Web.Controllers
 
             #endregion
 
-            return View("SuccessRegister", user);
+            ViewBag.UserName = user.UserName;
+            ViewBag.Email = user.Email;
+            return View("RegisterSuccess");
 
         }
 
@@ -145,7 +144,7 @@ namespace TopLearn.Web.Controllers
 
         #endregion
 
-        #region Active Account
+        #region Active account
 
         public IActionResult ActiveAccount(string id)
         {
@@ -153,6 +152,7 @@ namespace TopLearn.Web.Controllers
 
             if (user!=null)
             {
+
                 #region Login
 
                 var claims = new List<Claim>()
@@ -174,12 +174,53 @@ namespace TopLearn.Web.Controllers
                 HttpContext.SignInAsync(principal, properties);
 
                 #endregion
+
+                return View(user.UserName);
+
             }
 
-            
-            return View(user);
+            return NotFound();
+
         }
 
+        #endregion
+
+        #region Forgot password
+
+        [Route("ForgotPassword")]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [Route("ForgotPassword")]
+        [HttpPost]
+        public IActionResult ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            User user = _userService.GetUserByEmail(model.Email.FixEmail());
+
+            if (user==null)
+            {
+                ModelState.AddModelError("Email","ایمیل معتبر نمی باشد!");
+                return View(model);
+            }
+
+            #region Send Recovery Email
+
+            string body = _viewRenderService.RenderToStringAsync("_ForgotPassword", user);
+            SendEmail.Send(user.Email, "بازیابی کلمه عبور", body);
+
+            #endregion
+
+            ViewBag.UserName=user.UserName;
+            ViewBag.Email=user.Email;
+            return View("ForgotPasswordSuccess");
+        }
         #endregion
 
     }

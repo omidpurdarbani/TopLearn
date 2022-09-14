@@ -1,5 +1,4 @@
-﻿@model TopLearn.DataLayer.Entities.User.User
-@{
+﻿@{
 
     ViewData["Title"] = "عضویت در سایت";
 
@@ -19,11 +18,11 @@
 
         <div class="alert alert-success" style="width: 100%">
 
-            <h2 style="font-size: 25px">@Model.UserName عزیز</h2>
+            <h2 style="font-size: 25px">@ViewBag.UserName عزیز</h2>
             
             <div class="text-center">
                 <p style="font-size: 35px">ثبت نام شما با موفقیت انجام گردید!</p>
-                <p style="font-size: 20px">جهت تایید حساب کاربری خود از طریق لینکی که به آدرس ایمیل @Model.Email ارسال شد , اقدام نمایید .</p>
+                <p style="font-size: 20px">جهت تایید حساب کاربری خود از طریق لینکی که به آدرس ایمیل @ViewBag.Email ارسال شد , اقدام نمایید .</p>
             </div>
         </div>
 

@@ -9,8 +9,6 @@ namespace TopLearn.Core.Services.Interfaces
     public interface IUserService
     {
 
-        bool IsExistUserName(string userName);
-
         bool IsExistEmail(string email);
 
         int AddUser(User user);
@@ -18,6 +16,8 @@ namespace TopLearn.Core.Services.Interfaces
         User LoginUser(string Email, string Password);
 
         User ActiveAccount(string ActiveCode);
+
+        User GetUserByEmail(string Email);
 
     }
 }

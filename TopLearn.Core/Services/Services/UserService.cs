@@ -21,11 +21,6 @@ namespace TopLearn.Core.Services.Services
         {
             _context = context;
         }
-        
-        public bool IsExistUserName(string userName)
-        {
-            return _context.users.Any(p=>p.UserName==userName);
-        }
 
         public bool IsExistEmail(string email)
         {
@@ -60,6 +55,11 @@ namespace TopLearn.Core.Services.Services
 
             return user;
 
+        }
+
+        public User GetUserByEmail(string Email)
+        {
+            return _context.users.SingleOrDefault(p => p.Email == Email);
         }
     }
 }
