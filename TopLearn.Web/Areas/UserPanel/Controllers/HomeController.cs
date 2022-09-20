@@ -7,9 +7,6 @@ namespace TopLearn.Web.Areas.UserPanel.Controllers
     {
         [Area("UserPanel")]
         [Authorize]
-        public IActionResult Index()
-        {
-            return View();
-        }
+        public IActionResult Index() => View();
     }
 }
