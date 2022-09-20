@@ -87,7 +87,15 @@ namespace TopLearn.Web.Controllers
         [Route("Login")]
         public IActionResult Login()
         {
-            return View();
+            LoginViewModel model = new LoginViewModel();
+
+            string returnUrl = HttpContext.Request.Query["ReturnUrl"];
+            if (returnUrl != null)
+            {
+                model.ReturnPath = returnUrl;
+            }
+
+            return View(model);
         }
 
         [Route("Login")]
@@ -122,6 +130,11 @@ namespace TopLearn.Web.Controllers
                 };
 
                 HttpContext.SignInAsync(principal, properties);
+
+                if (model.ReturnPath != null)
+                {
+                    return Redirect(model.ReturnPath);
+                }
 
                 ViewBag.UserName = user.UserName;
                 ViewBag.Done = true;

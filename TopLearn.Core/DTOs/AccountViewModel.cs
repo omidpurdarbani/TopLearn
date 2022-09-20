@@ -47,6 +47,8 @@ namespace TopLearn.Core.DTOs
         [Display(Name = "مرا به خاطر بسپار")]
         public bool RememberMe { get; set; }
 
+        public string ReturnPath { get; set; }
+
     }
 
     public class ForgotPasswordViewModel
