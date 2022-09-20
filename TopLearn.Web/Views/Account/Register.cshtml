@@ -18,42 +18,64 @@
     <div class="container-content">
 
         <header><h2> عضویت در سایت </h2></header>
-
-        <div class="form-layer">
-
-            <form asp-action="Register" method="post">
-
-                <div class="input-group">
-                    <span class="input-group-addon" id="username"><i class="zmdi zmdi-account"></i></span>
-                    <input asp-for="UserName" type="text" class="form-control" placeholder="نام و نام خانوادگی" aria-describedby="username">
+        
+        @if(ViewBag.Done==true)
+        {
+            <div class="alert alert-success">
+                <h2 style="font-size: 25px">@ViewBag.UserName عزیز</h2>
+            <br/>
+                <div class="text-center">
+                    <p style="font-size: 25px">ثبت نام شما با موفقیت انجام گردید!</p>
+                    <br/>
+                    <p style="font-size: 20px">جهت تایید حساب کاربری خود از طریق لینکی که به آدرس ایمیل @ViewBag.Email ارسال شد , اقدام نمایید .</p>
                 </div>
+            </div>
+            
+            <div class="link">
+                <a href="/login" style="font-size: 18px"> <i class="zmdi zmdi-account"></i> ورود به سایت </a>
+            </div>
+        }
+        else
+        {
+            <div class="form-layer">
 
-                <div class="input-group">
-                    <span class="input-group-addon" id="email-address"><i class="zmdi zmdi-email"></i></span>
-                    <input asp-for="Email" type="email" class="form-control" placeholder="ایمیل" aria-describedby="email-address">
-                </div>
+                <form asp-action="Register" method="post">
 
-                <div class="input-group">
-                    <span class="input-group-addon" id="password"><i class="zmdi zmdi-lock"></i></span>
-                    <input asp-for="Password" type="password" class="form-control" placeholder="رمز عبور " aria-describedby="password">
-                </div>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="username"><i class="zmdi zmdi-account"></i></span>
+                        <input asp-for="UserName" type="text" class="form-control" placeholder="نام و نام خانوادگی" aria-describedby="username">
+                    </div>
 
-                <div class="input-group">
-                    <span class="input-group-addon" id="password"><i class="zmdi zmdi-lock"></i></span>
-                    <input asp-for="RePassword" type="password" class="form-control" placeholder="تکرار رمز عبور" aria-describedby="password">
-                </div>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="email-address"><i class="zmdi zmdi-email"></i></span>
+                        <input asp-for="Email" type="email" class="form-control" placeholder="ایمیل" aria-describedby="email-address">
+                    </div>
 
-                <div asp-validation-summary="All" class="text-danger">
-                </div>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="password"><i class="zmdi zmdi-lock"></i></span>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="رمز عبور " aria-describedby="password">
+                    </div>
 
-                <div class="link">
-                    <a href="/login"> <i class="zmdi zmdi-account"></i> ورود به سایت </a>
-                </div>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="password"><i class="zmdi zmdi-lock"></i></span>
+                        <input asp-for="RePassword" type="password" class="form-control" placeholder="تکرار رمز عبور" aria-describedby="password">
+                    </div>
 
-                <button class="btn btn-success"> عضویت در سایت </button>
+                    <div asp-validation-summary="All" class="text-danger">
+                    </div>
+                    <br/>
+                    <div class="link">
+                        <a href="/login" style="font-size: 18px"> <i class="zmdi zmdi-account"></i> ورود به سایت </a>
+                    </div>
 
-            </form>
-        </div>
+                    <button class="btn btn-success"> عضویت در سایت </button>
+
+                </form>
+            </div>
+        }
+        
+
+        
 
     </div>
 </main>

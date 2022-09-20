@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore.Internal;
 using System.Linq;
-using System.Text;
-using Microsoft.EntityFrameworkCore.Internal;
 using TopLearn.Core.Convertors;
 using TopLearn.Core.Generator;
 using TopLearn.Core.Security;
@@ -60,6 +57,18 @@ namespace TopLearn.Core.Services.Services
         public User GetUserByEmail(string Email)
         {
             return _context.users.SingleOrDefault(p => p.Email == Email);
+        }
+
+        public User GetUserByActiveCode(string ActiveCode)
+        {
+            return _context.users.SingleOrDefault(u => u.ActiveCode == ActiveCode);
+        }
+
+        public void UpdateUser(User user)
+        {
+            user.ActiveCode = TextGenerator.GenerateUniqCode();
+            _context.users.Update(user);
+            _context.SaveChanges();
         }
     }
 }

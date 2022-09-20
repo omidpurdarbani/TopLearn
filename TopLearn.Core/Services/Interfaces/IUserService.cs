@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TopLearn.Core.DTOs;
-using TopLearn.DataLayer.Entities.User;
+﻿using TopLearn.DataLayer.Entities.User;
 
 namespace TopLearn.Core.Services.Interfaces
 {
@@ -18,6 +14,10 @@ namespace TopLearn.Core.Services.Interfaces
         User ActiveAccount(string ActiveCode);
 
         User GetUserByEmail(string Email);
+
+        User GetUserByActiveCode(string ActiveCode);
+
+        void UpdateUser(User user);
 
     }
 }

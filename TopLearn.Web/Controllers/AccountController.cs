@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using TopLearn.Core.Convertors;
 using TopLearn.Core.DTOs;
 using TopLearn.Core.Generator;
@@ -69,13 +69,14 @@ namespace TopLearn.Web.Controllers
             #region Send Activation Email
 
             string body = _viewRenderService.RenderToStringAsync("_ActiveEmail", user);
-            SendEmail.Send(user.Email,"فعال سازی حساب",body);
+            SendEmail.Send(user.Email, "فعال سازی حساب", body);
 
             #endregion
 
             ViewBag.UserName = user.UserName;
             ViewBag.Email = user.Email;
-            return View("RegisterSuccess");
+            ViewBag.Done = true;
+            return View(model);
 
         }
 
@@ -100,7 +101,7 @@ namespace TopLearn.Web.Controllers
 
             var user = _userService.LoginUser(model.Email, model.Password);
 
-            if (user!=null)
+            if (user != null)
             {
 
                 //Login User
@@ -111,7 +112,7 @@ namespace TopLearn.Web.Controllers
                     new Claim(ClaimTypes.Email, user.Email)
                 };
 
-                var identity = new ClaimsIdentity(claims,CookieAuthenticationDefaults.AuthenticationScheme);
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                 var principal = new ClaimsPrincipal(identity);
 
@@ -122,11 +123,13 @@ namespace TopLearn.Web.Controllers
 
                 HttpContext.SignInAsync(principal, properties);
 
-                ViewBag.one = false;
-
-                return View("LoginSuccess",user.UserName);
+                ViewBag.UserName = user.UserName;
+                ViewBag.Done = true;
+                return View(model);
 
             }
+
+            ModelState.AddModelError("Email", "اطلاعات وارد شده معتبر نمی باشند !");
 
             return View(model);
         }
@@ -150,7 +153,7 @@ namespace TopLearn.Web.Controllers
         {
             User user = _userService.ActiveAccount(id);
 
-            if (user!=null)
+            if (user != null)
             {
 
                 #region Login
@@ -175,7 +178,7 @@ namespace TopLearn.Web.Controllers
 
                 #endregion
 
-                return View(user.UserName);
+                return View("ActiveAccount", user.UserName);
 
             }
 
@@ -204,9 +207,9 @@ namespace TopLearn.Web.Controllers
 
             User user = _userService.GetUserByEmail(model.Email.FixEmail());
 
-            if (user==null)
+            if (user == null)
             {
-                ModelState.AddModelError("Email","ایمیل معتبر نمی باشد!");
+                ModelState.AddModelError("Email", "ایمیل معتبر نمی باشد!");
                 return View(model);
             }
 
@@ -217,9 +220,56 @@ namespace TopLearn.Web.Controllers
 
             #endregion
 
-            ViewBag.UserName=user.UserName;
-            ViewBag.Email=user.Email;
-            return View("ForgotPasswordSuccess");
+            ViewBag.UserName = user.UserName;
+            ViewBag.Email = user.Email;
+            ViewBag.Done = true;
+            return View(model);
+        }
+        #endregion
+
+        #region Reset password
+
+        public IActionResult ResetPassword(string id)
+        {
+            User user = _userService.GetUserByActiveCode(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(new ResetPasswordViewModel()
+            {
+                ActiveCode = id
+            });
+        }
+
+        [HttpPost]
+        public IActionResult ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            User user = _userService.GetUserByActiveCode(model.ActiveCode);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            string hashNewPassword = PasswordHelper.EncodePasswordMd5(model.Password);
+            user.Password = hashNewPassword;
+            _userService.UpdateUser(user);
+
+            #region Logout
+
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            #endregion
+
+            ViewBag.Done = true;
+            return View(model);
         }
         #endregion
 

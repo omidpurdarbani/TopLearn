@@ -1,38 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+	<PropertyGroup>
+	  <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\css\fonts\Material-Design-Iconic-Font.svg" />
-    <None Include="wwwroot\css\fonts\Material-Design-Iconic-Font.woff2" />
-    <None Include="wwwroot\js\bootstrap.min.js" />
-    <None Include="wwwroot\js\jquery.min.js" />
-    <None Include="wwwroot\js\jquery.unobtrusive-ajax.min.js" />
-    <None Include="wwwroot\js\jquery.validate.js" />
-    <None Include="wwwroot\js\jquery.validate.min.js" />
-    <None Include="wwwroot\js\jquery.validate.unobtrusive.js" />
-    <None Include="wwwroot\js\jquery.validate.unobtrusive.min.js" />
-    <None Include="wwwroot\js\modernizr-custom.js" />
-    <None Include="wwwroot\js\script.js" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.2" >
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
+	  <None Include="wwwroot\css\fonts\Material-Design-Iconic-Font.svg" />
+	  <None Include="wwwroot\css\fonts\Material-Design-Iconic-Font.woff2" />
+	  <None Include="wwwroot\js\bootstrap.min.js" />
+	  <None Include="wwwroot\js\jquery.min.js" />
+	  <None Include="wwwroot\js\jquery.unobtrusive-ajax.min.js" />
+	  <None Include="wwwroot\js\jquery.validate.js" />
+	  <None Include="wwwroot\js\jquery.validate.min.js" />
+	  <None Include="wwwroot\js\jquery.validate.unobtrusive.js" />
+	  <None Include="wwwroot\js\jquery.validate.unobtrusive.min.js" />
+	  <None Include="wwwroot\js\modernizr-custom.js" />
+	  <None Include="wwwroot\js\script.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TopLearn.Core\TopLearn.Core.csproj" />
-    <ProjectReference Include="..\TopLearn.DataLayer\TopLearn.DataLayer.csproj" />
+	  <PackageReference Include="Microsoft.AspNetCore.App" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.6" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.6">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+	  <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <ProjectReference Include="..\TopLearn.Core\TopLearn.Core.csproj" />
+	  <ProjectReference Include="..\TopLearn.DataLayer\TopLearn.DataLayer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\UserPanel\Controllers\" />
+    <Folder Include="Areas\UserPanel\Data\" />
+    <Folder Include="Areas\UserPanel\Models\" />
+    <Folder Include="Areas\UserPanel\Views\" />
   </ItemGroup>
 
 </Project>

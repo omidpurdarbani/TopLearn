@@ -16,37 +16,54 @@
     <div class="container-content">
 
         <header><h2> ورود به سایت </h2></header>
+        
+        @if(ViewBag.Done==true)
+        {
+           <div class="alert alert-success">
+               <h2 style="font-size: 25px">@ViewBag.UserName عزیز</h2>
+               <br/>
+               <div class="text-center">
+                   <p style="font-size: 25px;">ورود شما با موفقیت انجام شد!</p>
+                   <br/>
+               </div>
+           </div>
+            
+          <div class="link">
+              <a href="/" style="font-size: 18px"> <i class="zmdi zmdi-account"></i> صفحه اصلی </a>
+           </div>
+        }
+        else
+        {
+            <div class="form-layer">
 
-        <div class="form-layer">
+                <form asp-action="Login" method="post">
 
-            <form asp-action="Login" method="post">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="email-address"><i class="zmdi zmdi-email"></i></span>
+                        <input asp-for="Email" type="email" class="form-control" placeholder="ایمیل" aria-describedby="email-address">
+                    </div>
+                    <span asp-validation-for="Email"></span>
+                
+                    <div class="input-group">
+                        <span class="input-group-addon" id="password"><i class="zmdi zmdi-lock"></i></span>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="رمز عبور " aria-describedby="password">
+                    </div>
+                    <span asp-validation-for="Password"></span>
+                    <div class="remember-me">
+                        <label style="font-size: 20px"><input asp-for="RememberMe" type="checkbox" name="">  مرا بخاطر بسپار </label>
+                    </div>
+                    <span asp-validation-for="RememberMe"></span>
+               
+                    <div class="link">
+                        <a href="/ForgotPassword" style="font-size: 18px"> <i class="zmdi zmdi-lock"></i>بازیابی کلمه عبور</a>
+                        <a href="/Register" style="font-size: 18px"> <i class="zmdi zmdi-account"></i> عضویت در سایت </a>
+                    </div>
+               
+                    <button class="btn btn-success"> ورود به سایت </button>
 
-                <div class="input-group">
-                    <span class="input-group-addon" id="email-address"><i class="zmdi zmdi-email"></i></span>
-                    <input asp-for="Email" type="email" class="form-control" placeholder="ایمیل" aria-describedby="email-address">
-                </div>
-                <span asp-validation-for="Email"></span>
-
-                <div class="input-group">
-                    <span class="input-group-addon" id="password"><i class="zmdi zmdi-lock"></i></span>
-                    <input asp-for="Password" type="password" class="form-control" placeholder="رمز عبور " aria-describedby="password">
-                </div>
-                <span asp-validation-for="Password"></span>
-
-                <div class="remember-me">
-                    <label><input asp-for="RememberMe" type="checkbox" name="">  مرا بخاطر بسپار </label>
-                </div>
-                <span asp-validation-for="RememberMe"></span>
-
-                <div class="link">
-                    <a href="/ForgotPassword"> <i class="zmdi zmdi-lock"></i> رمز عبور خود را فراموش کرده ام !</a>
-                    <a href="/Register"> <i class="zmdi zmdi-account"></i> عضویت در سایت </a>
-                </div>
-                        
-                <button class="btn btn-success"> ورود به سایت </button>
-
-            </form>
-        </div>
+                </form>
+            </div>
+        }
 
     </div>
 </main>
