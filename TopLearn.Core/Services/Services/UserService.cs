@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Internal;
 using System.Linq;
 using TopLearn.Core.Convertors;
+using TopLearn.Core.DTOs;
 using TopLearn.Core.Generator;
 using TopLearn.Core.Security;
 using TopLearn.Core.Services.Interfaces;
@@ -69,6 +70,19 @@ namespace TopLearn.Core.Services.Services
             user.ActiveCode = TextGenerator.GenerateUniqCode();
             _context.users.Update(user);
             _context.SaveChanges();
+        }
+
+        public InformationUserViewModel GetUserInformation(string UserEmail)
+        {
+            var User = GetUserByEmail(UserEmail);
+
+            InformationUserViewModel UserInformation = new InformationUserViewModel();
+            UserInformation.Email = User.Email;
+            UserInformation.RegisterDate = User.RegisterDate;
+            UserInformation.UserName = User.UserName;
+            UserInformation.Wallet = 0;
+
+            return UserInformation;
         }
     }
 }

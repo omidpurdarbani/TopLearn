@@ -1,9 +1,12 @@
-﻿using TopLearn.DataLayer.Entities.User;
+﻿using TopLearn.Core.DTOs;
+using TopLearn.DataLayer.Entities.User;
 
 namespace TopLearn.Core.Services.Interfaces
 {
     public interface IUserService
     {
+
+        #region User account
 
         bool IsExistEmail(string email);
 
@@ -18,6 +21,14 @@ namespace TopLearn.Core.Services.Interfaces
         User GetUserByActiveCode(string ActiveCode);
 
         void UpdateUser(User user);
+
+        #endregion
+
+        #region User panel
+
+        InformationUserViewModel GetUserInformation(string UserEmail);
+
+        #endregion
 
     }
 }

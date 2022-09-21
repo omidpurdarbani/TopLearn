@@ -1,6 +1,7 @@
-﻿
+﻿@using TopLearn.Core.Convertors
+@model TopLearn.Core.DTOs.InformationUserViewModel
 @{
-    ViewData["Title"] = "پنل کاربری" + User.Identity.Name;
+    ViewData["Title"] = "پنل کاربری" + Model.UserName;
 }
 
 <div class="container">
@@ -25,8 +26,8 @@
                                 <img src="images/pic/avatar.jpg">
                             </div>
                             <div class="detail">
-                                <span style="font-size: 20px"> ایمان مدائنی </span>
-                                <span> عضویت : 01/01/1395 </span>
+                                <span style="font-size: 20px"> @Model.UserName </span>
+                                <span> عضویت : @Model.RegisterDate.ToShamsi() </span>
                             </div>
                         </div>
 
@@ -51,11 +52,10 @@
                             <div class="account-information">
                                 <h3 style="font-size: 20px"> اطلاعات کاربری </h3>
                                 <ul>
-                                    <li style="font-size: 18px"> <i class="zmdi zmdi-account"></i> نام و نام خانوادگی : ایمان مدائنی </li>
-                                    <li style="font-size: 18px"> <i class="zmdi zmdi-assignment-account"></i> نام کاربری :  imadmadaeni </li>
-                                    <li style="font-size: 18px"> <i class="zmdi zmdi-email"></i> ایمیل : imadmadaeni@gmail.com </li>
-                                    <li style="font-size: 18px"> <i class="zmdi zmdi-calendar-check"></i> تاریخ عضویت : 01/01/1395 </li>
-                                    <li style="font-size: 18px"> <i class="zmdi zmdi-smartphone-android"></i> شماره تماس : 0912000000 </li>
+                                    <li style="font-size: 18px"> <i class="zmdi zmdi-account"></i> نام و نام خانوادگی : @Model.UserName </li>
+                                    <li style="font-size: 18px"> <i class="zmdi zmdi-email"></i> ایمیل : @Model.Email </li>
+                                    <li style="font-size: 18px"> <i class="zmdi zmdi-calendar-check"></i> تاریخ عضویت : @Model.RegisterDate.ToShamsi() </li>
+                                    <li style="font-size: 18px"> <i class="zmdi zmdi-money"></i> موجودی حساب : @Model.Wallet تومان</li>
                                 </ul>
                             </div>
                         </div>

@@ -169,28 +169,6 @@ namespace TopLearn.Web.Controllers
             if (user != null)
             {
 
-                #region Login
-
-                var claims = new List<Claim>()
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email, user.Email)
-                };
-
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                var principal = new ClaimsPrincipal(identity);
-
-                var properties = new AuthenticationProperties()
-                {
-                    IsPersistent = true
-                };
-
-                HttpContext.SignInAsync(principal, properties);
-
-                #endregion
-
                 return View("ActiveAccount", user.UserName);
 
             }
