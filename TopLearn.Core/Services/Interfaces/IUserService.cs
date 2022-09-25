@@ -28,6 +28,12 @@ namespace TopLearn.Core.Services.Interfaces
 
         InformationUserViewModel GetUserInformation(string UserEmail);
 
+        SideBarUserPanelViewModel GetSideBarUserPanelData(string UserEmail);
+
+        EditProfileViewModel GetDataForEditUserProfile(string UserEmail);
+
+        void EditProfile(string useremail, EditProfileViewModel profile);
+
         #endregion
 
     }

@@ -1,0 +1,137 @@
+﻿@model TopLearn.Core.DTOs.EditProfileViewModel
+@{
+    ViewData["Title"] = "ویرایش حساب کاربری";
+}
+
+
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">تاپ لرن</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a asp-action="EditProfile"> ویرایش حساب کاربری </a></li>
+        </ul>
+    </nav>
+</div>
+
+
+
+<main>
+    <div class="container">
+        <div class="user-account">
+            <div class="row">
+                <partial name="_SideBar" />
+                <div class="col-md-9 col-sm-8 col-xs-12">
+                    <section class="user-account-content">
+                        <header><h1 style="font-size: 25px"> ویرایش حساب کاربری </h1></header>
+                        
+                       
+                            
+                            <noscript>
+                                <div class="alert alert-danger">
+                                    Your browser does not support JavaScript!
+                                </div>
+                            </noscript>
+                        
+
+                        <div class="inner form-layer">
+                            @if (ViewBag.Done == true)
+                            {
+                                <div class="alert alert-success">
+                                    <h2 style="font-size: 25px">@Model.UserName عزیز</h2>
+                                    <br/>
+                                    <div class="text-center">
+                                        <p style="font-size: 25px;">حساب کاربری شما با موفقیت ویرایش شد !</p>
+                                    </div> 
+                                    <div class="link">
+                                        <a href="/userpanel" style="font-size: 18px"> <i class="zmdi zmdi-account"></i> پنل کاربری </a>
+                                    </div>
+
+                                </div>
+                            }
+                            else
+                            {
+                                <form asp-action="EditProfile" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" asp-for="AvatarName" />
+                                    <div class="row">
+                                        <div class="col-md-7 col-sm-8 col-xs-12">
+                                            <div class="input-group">
+                                                <span class="input-group-addon" id="username"><i class="zmdi zmdi-account"></i></span>
+                                                <input asp-for="UserName" style="font-size: 18px" type="text" class="form-control" placeholder="نام و نام خانوادگی" aria-describedby="username">
+                                            </div>
+                                            <span asp-validation-for="UserName"></span>
+                                        </div>
+
+                                        <div class="col-md-7 col-sm-8 col-xs-12">
+                                            <div class="">
+                                                <label style="font-size: 18px">
+                                                    عکس پروفایل :
+                                                    <br/>
+                                                    <br/>
+                                                    <img id="img" class="thumbnail" style="width: 200px;max-width: 200px" src="/UserAvatar/@(Model.AvatarName)" />
+                                                    <label style="font-size: 18px">
+                                                        <input asp-for="OldAvatar" checked id="CheckBox" style="font-size: 18px" type="checkbox"> ادامه با عکس پروفایل قبلی
+                                                    </label>
+                                                    <br/>
+                                                    <span asp-validation-for="OldAvatar"></span>
+                                                    <input asp-for="UserAvatar" id="File" type="file" class="form-control">
+                                                    <br/>
+                                                    <span asp-validation-for="UserAvatar"></span>
+                                                    </label>
+                                                
+                                                
+                                            </div>
+                                            
+
+                                        </div>
+
+                                        <div class="col-md-7 col-sm-8 col-xs-12">
+                                            <div class="link">
+                                                <br/>
+                                                <p class="text-danger" style="font-size: 18px"> * توجه : ایمیل ثبت شده غیر قابل تغیر می باشد * </p>
+                                                <br/>
+                                                <a style="font-size: 18px" href="/ChangePassword"> <i class="zmdi zmdi-account"></i> تغیر رمز عبور </a>
+                                                <a style="font-size: 18px" href="/ForgotPassword"> <i class="zmdi zmdi-lock"></i> رمز عبور خود را فراموش کرده ام !</a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-7 col-sm-8 col-xs-12">
+                                            <button style="font-size: 20px" class="btn btn-success"> ویرایش اطلاعات </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            }
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    var checkbox = document.getElementById("CheckBox");
+    var file = document.getElementById("File");
+    var img = document.getElementById("img");
+
+    if (checkbox.checked == true) {
+        file.disabled = true;
+        img.style.display="block";
+    }
+
+    if (checkbox.checked == false) {
+        file.disabled = false;
+        img.style.display = "none";
+    }
+    
+
+    checkbox.addEventListener("click", () => {
+        file = document.getElementById("File");
+
+        if (checkbox.checked == true) {
+            img.style.display = "block";
+            file.disabled = true;
+        }
+        if (checkbox.checked == false) {
+            img.style.display = "none";
+            file.disabled = false;
+        }
+    });
+</script>

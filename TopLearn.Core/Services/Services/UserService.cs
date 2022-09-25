@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Internal;
+using System.IO;
 using System.Linq;
 using TopLearn.Core.Convertors;
 using TopLearn.Core.DTOs;
@@ -83,6 +84,55 @@ namespace TopLearn.Core.Services.Services
             UserInformation.Wallet = 0;
 
             return UserInformation;
+        }
+
+        public SideBarUserPanelViewModel GetSideBarUserPanelData(string UserEmail)
+        {
+            return _context.users.Where(u => u.Email == UserEmail).Select(p => new SideBarUserPanelViewModel()
+            {
+                UserName = p.UserName,
+                RegisterDate = p.RegisterDate,
+                ImageName = p.UserAvatar
+            }).Single();
+        }
+
+        public EditProfileViewModel GetDataForEditUserProfile(string UserEmail)
+        {
+            return _context.users.Where(u => u.Email == UserEmail).Select(u => new EditProfileViewModel()
+            {
+                AvatarName = u.UserAvatar,
+                UserName = u.UserName
+            }).Single();
+        }
+
+        public void EditProfile(string useremail, EditProfileViewModel profile)
+        {
+            if (profile.UserAvatar != null)
+            {
+                string imagePath = "";
+                if (profile.AvatarName != "Defult.jpg")
+                {
+                    imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/UserAvatar", profile.AvatarName);
+                    if (File.Exists(imagePath))
+                    {
+                        File.Delete(imagePath);
+                    }
+                }
+
+                profile.AvatarName = TextGenerator.GenerateUniqCode() + Path.GetExtension(profile.UserAvatar.FileName);
+                imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/UserAvatar", profile.AvatarName);
+                using (var stream = new FileStream(imagePath, FileMode.Create))
+                {
+                    profile.UserAvatar.CopyTo(stream);
+                }
+            }
+
+            var user = GetUserByEmail(useremail);
+            user.UserName = profile.UserName;
+            user.UserAvatar = profile.AvatarName;
+
+            UpdateUser(user);
+
         }
     }
 }
