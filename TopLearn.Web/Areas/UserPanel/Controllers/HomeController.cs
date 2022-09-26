@@ -61,5 +61,7 @@ namespace TopLearn.Web.Areas.UserPanel.Controllers
             return View(_userService.GetDataForEditUserProfile(User.FindFirstValue(ClaimTypes.Email)));
         }
 
+
+
     }
 }
