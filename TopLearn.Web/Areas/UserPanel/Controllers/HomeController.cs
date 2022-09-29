@@ -50,7 +50,7 @@ namespace TopLearn.Web.Areas.UserPanel.Controllers
 
             if (model.OldAvatar == false && model.UserAvatar == null)
             {
-                ModelState.AddModelError("UserAvatar", "عکسی انتخاب نشده است !");
+                ModelState.AddModelError("UserAvatar", "عکسی انتخاب نشده است ! ");
                 return View(model);
             }
 
