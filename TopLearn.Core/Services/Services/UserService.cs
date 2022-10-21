@@ -134,5 +134,21 @@ namespace TopLearn.Core.Services.Services
             UpdateUser(user);
 
         }
+
+        public bool CompareCurrentPassword(string UserEmail, string CurrentPassword)
+        {
+            string HashedCurrentPassword = PasswordHelper.EncodePasswordMd5(CurrentPassword);
+
+            return _context.users.Any(u => u.Email == UserEmail && u.Password == HashedCurrentPassword);
+        }
+
+        public void ChangeUserPassword(string UserEmail, string NewPassword)
+        {
+            User user = GetUserByEmail(UserEmail);
+
+            user.Password = PasswordHelper.EncodePasswordMd5(NewPassword);
+
+            UpdateUser(user);
+        }
     }
 }

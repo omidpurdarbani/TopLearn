@@ -32,7 +32,11 @@ namespace TopLearn.Core.Services.Interfaces
 
         EditProfileViewModel GetDataForEditUserProfile(string UserEmail);
 
-        void EditProfile(string useremail, EditProfileViewModel profile);
+        void EditProfile(string UserEmail, EditProfileViewModel profile);
+
+        bool CompareCurrentPassword(string UserEmail, string CurrentPassword);
+
+        void ChangeUserPassword(string UserEmail, string NewPassword);
 
         #endregion
 

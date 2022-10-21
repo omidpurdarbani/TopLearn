@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TopLearn.Core.DTOs;
@@ -27,14 +29,16 @@ namespace TopLearn.Web.Areas.UserPanel.Controllers
             return View(_userService.GetUserInformation(User.FindFirstValue(ClaimTypes.Email)));
         }
 
-        [Route("/UserPanel/EditProfile")]
+        #region Edit Profile
+
+        [Route("/EditProfile")]
         public IActionResult EditProfile()
         {
             return View(_userService.GetDataForEditUserProfile(User.FindFirstValue(ClaimTypes.Email)));
         }
 
         [HttpPost]
-        [Route("/UserPanel/EditProfile")]
+        [Route("/EditProfile")]
         public IActionResult EditProfile(EditProfileViewModel model)
         {
             if (!ModelState.IsValid)
@@ -60,6 +64,51 @@ namespace TopLearn.Web.Areas.UserPanel.Controllers
             ViewBag.Done = true;
             return View(_userService.GetDataForEditUserProfile(User.FindFirstValue(ClaimTypes.Email)));
         }
+
+        #endregion
+
+        #region Change Password
+
+        [Route("/ChangePassword")]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route("/ChangePassword")]
+        public IActionResult ChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            string UserEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            if (!_userService.CompareCurrentPassword(UserEmail, model.CurrentPassword))
+            {
+                ModelState.AddModelError("CurrentPassword", "کلمه عبور فعلی صحیح نمی باشد");
+                return View(model);
+            }
+
+            _userService.ChangeUserPassword(UserEmail, model.NewPassword);
+
+            ViewBag.Done = true;
+            ViewBag.UserName = _userService
+                .GetUserByEmail(UserEmail).UserName;
+
+            #region Logout
+
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            #endregion
+
+            return View();
+        }
+
+        #endregion
+
 
 
 
