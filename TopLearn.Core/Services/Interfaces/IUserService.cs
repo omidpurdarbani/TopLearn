@@ -1,5 +1,7 @@
-﻿using TopLearn.Core.DTOs;
+﻿using System.Collections.Generic;
+using TopLearn.Core.DTOs;
 using TopLearn.DataLayer.Entities.User;
+using TopLearn.DataLayer.Entities.Wallet;
 
 namespace TopLearn.Core.Services.Interfaces
 {
@@ -17,6 +19,8 @@ namespace TopLearn.Core.Services.Interfaces
         User ActiveAccount(string ActiveCode);
 
         User GetUserByEmail(string Email);
+
+        int GetUserIdByEmail(string Email);
 
         User GetUserByActiveCode(string ActiveCode);
 
@@ -37,6 +41,19 @@ namespace TopLearn.Core.Services.Interfaces
         bool CompareCurrentPassword(string UserEmail, string CurrentPassword);
 
         void ChangeUserPassword(string UserEmail, string NewPassword);
+
+        #endregion
+
+
+        #region Wallet
+
+        int UserWalletBalance(string UserEmail);
+
+        List<WalletViewModel> GetUserWallet(string UserEmail);
+
+        void ChargeWallet(string userEmail, int amount, string description, bool isPay = false);
+
+        void AddWallet(Wallet wallet);
 
         #endregion
 

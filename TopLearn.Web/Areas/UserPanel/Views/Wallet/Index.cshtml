@@ -1,0 +1,112 @@
+﻿@using TopLearn.Core.Convertors
+@using TopLearn.Core.DTOs
+@model TopLearn.Core.DTOs.WalletChargeViewModel
+@{
+    ViewData["Title"] = "کیف پول";
+}
+
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">تاپ لرن</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a asp-action="Index" asp-controller="Wallet"> شارژ کیف پول </a></li>
+        </ul>
+    </nav>
+</div>
+
+<main>
+    <div class="container">
+        <div class="user-account">
+            <div class="row">
+                <partial name="_SideBar" />
+                <div class="col-md-9 col-sm-8 col-xs-12">
+                    <section class="user-account-content">
+                        <header style="height: 60px;">
+                            <h1 style="font-size: 25px; width: 50%; float: right; padding: 10px;"> کیف پول </h1>
+                            <h1 style="font-size: 20px;width: 50%;float: right; padding: 10px;text-align: left">موجودی شما : @ViewBag.Balance تومان</h1>
+                        </header>
+                        <div class="inner form-layer">
+                            <form asp-action="Index" method="post">
+
+                                <div class="row">
+                                    <div class="alert alert-warning text-center"><b>مبلغ شارژ به تومان می باشد و لطفا دقت کنید مبلغ پرداختی به هیچ عنوان امکان استرداد ندارد .</b></div>
+                                    <div class="col-md-7 col-sm-8 col-xs-12">
+                                        <div style="width: 100%" class="input-group">
+                                            <label style="display: block;line-height: 22px;font-size: 18px;
+                                                          word-spacing: -2px;color:#686e71;margin-bottom: 2px;"><i class="zmdi zmdi-money"></i> مبلغ مورد نظر (تومان) </label>
+                                            <input style="    position: relative;
+                                                          top: 2px;
+                                                          margin-left: 6px;
+                                                          font-size: 14px;
+                                                          width: 100%;
+                                                          line-height: 40px;
+                                                          height: 40px;
+                                                          padding: 0 15px;
+                                                          border: 1px solid #e4ecef;
+                                                          color: #56707c;
+                                                          font-size: 14px;
+                                                          word-spacing: -1px;
+                                                          margin-top: 8px;
+                                                          border-radius: 3px;
+                                                          -moz-border-radius: 3px;
+                                                          -webkit-border-radius: 3px;" asp-for="Amount" type="number" value="" class="form-control" placeholder="مبلغ به تومان" aria-describedby="username">
+                                        </div>
+                                        <span asp-validation-for="Amount"></span>
+                                    </div>
+                                    <div class="col-md-5 col-sm-4 col-xs-12">
+                                        <button style="font-size: 18px;
+                                                       margin-top: 34px;
+                                                   " class="btn btn-success">
+                                            شارژ حساب
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <hr />
+                            @{
+                                List<WalletViewModel> list = ViewBag.ListWallet as List<WalletViewModel>;
+                            }
+        
+                                <div class="table-responsive" style="overflow-y: auto; overflow-x: auto; height: fit-content; max-height: 40vh;">
+                                <table style="font-size: 16px;padding: 8px;text-align: center;" class="table table-browed table-hover dataTable table-striped" role="grid">
+                                        
+                                        <tr style="font-size: 20px" class="active">
+                                            <td>عنوان تراکنش</td>
+                                            <td>مبلغ (تومان)</td>
+                                            <td>تاریخ</td>
+                                            <td>توضیحات</td>
+                                        </tr>
+                                        @foreach (var item in list)
+                                        {
+                                            <tr>
+                                                @if (item.Type == 1)
+                                                {
+                                                    <td class="text-success">واریز</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-danger">برداشت</td>
+                                                }
+                                                <td>
+                                                    @item.Amount.ToString("#,0 تومان")
+                                                </td>
+                                                <td>
+                                                    @item.DateTime.ToShamsi()
+                                                </td>
+                                                <td>
+                                                    @item.Description
+                                                </td>
+                                                
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                            </div>
+                        
+                    </section>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Internal;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TopLearn.Core.Convertors;
@@ -8,6 +10,7 @@ using TopLearn.Core.Security;
 using TopLearn.Core.Services.Interfaces;
 using TopLearn.DataLayer.Context;
 using TopLearn.DataLayer.Entities.User;
+using TopLearn.DataLayer.Entities.Wallet;
 
 namespace TopLearn.Core.Services.Services
 {
@@ -61,6 +64,11 @@ namespace TopLearn.Core.Services.Services
             return _context.users.SingleOrDefault(p => p.Email == Email);
         }
 
+        public int GetUserIdByEmail(string Email)
+        {
+            return _context.users.SingleOrDefault(p => p.Email == Email).UserId;
+        }
+
         public User GetUserByActiveCode(string ActiveCode)
         {
             return _context.users.SingleOrDefault(u => u.ActiveCode == ActiveCode);
@@ -81,7 +89,7 @@ namespace TopLearn.Core.Services.Services
             UserInformation.Email = User.Email;
             UserInformation.RegisterDate = User.RegisterDate;
             UserInformation.UserName = User.UserName;
-            UserInformation.Wallet = 0;
+            UserInformation.Wallet = UserWalletBalance(UserEmail);
 
             return UserInformation;
         }
@@ -149,6 +157,62 @@ namespace TopLearn.Core.Services.Services
             user.Password = PasswordHelper.EncodePasswordMd5(NewPassword);
 
             UpdateUser(user);
+        }
+
+        public int UserWalletBalance(string UserEmail)
+        {
+
+            int userId = GetUserIdByEmail(UserEmail);
+
+            var Deposit = _context.Wallets
+                .Where(w => w.UserId == userId && w.TypeId == 1 && w.IsPay)
+                .Select(w => w.Amount)
+                .ToList();
+
+            var WithDraw = _context.Wallets
+                .Where(w => w.UserId == userId && w.TypeId == 2 && w.IsPay)
+                .Select(w => w.Amount)
+                .ToList();
+
+            var Remain = (Deposit.Sum()) - (WithDraw.Sum());
+
+            return Remain;
+
+        }
+
+        public List<WalletViewModel> GetUserWallet(string UserEmail)
+        {
+            int useId = GetUserIdByEmail(UserEmail);
+            return _context.Wallets
+                .Where(w => w.IsPay && w.UserId == useId)
+                .Select(p => new WalletViewModel()
+                {
+                    Amount = p.Amount,
+                    DateTime = p.CreateDate,
+                    Description = p.Description,
+                    Type = p.TypeId
+                })
+                .ToList();
+        }
+
+        public void ChargeWallet(string userEmail, int amount, string description, bool isPay = false)
+        {
+            Wallet wallet = new Wallet()
+            {
+                Amount = amount,
+                CreateDate = DateTime.Now,
+                Description = description,
+                IsPay = isPay,
+                TypeId = 1,
+                UserId = GetUserIdByEmail(userEmail)
+            };
+            AddWallet(wallet);
+        }
+
+        public void AddWallet(Wallet wallet)
+        {
+            _context.Wallets.Add(wallet);
+            _context.SaveChanges();
         }
     }
 }
