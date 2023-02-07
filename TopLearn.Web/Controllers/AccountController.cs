@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using TopLearn.Core.Convertors;
-using TopLearn.Core.DTOs;
+using TopLearn.Core.DTOs.User;
 using TopLearn.Core.Generator;
 using TopLearn.Core.Security;
 using TopLearn.Core.Senders;
@@ -14,10 +14,14 @@ using TopLearn.DataLayer.Entities.User;
 
 namespace TopLearn.Web.Controllers
 {
+
     public class AccountController : Controller
     {
 
         #region Constructor injection
+
+        private static bool sended = false;
+        private static User _user = new User();
 
         private IUserService _userService;
         private IViewRenderService _viewRenderService;
@@ -32,13 +36,25 @@ namespace TopLearn.Web.Controllers
 
         #region Register
 
-        [Route("Register")]
+        [Route("/Register")]
         public IActionResult Register()
         {
+            if (sended == true)
+            {
+                ViewBag.UserName = _user.UserName;
+                ViewBag.Email = _user.Email;
+                ViewBag.Resend = true;
+
+                sended = false;
+                _user = null;
+
+                return View();
+            }
+
             return View();
         }
 
-        [Route("Register")]
+        [Route("/Register")]
         [HttpPost]
         public IActionResult Register(RegisterViewModel model)
         {
@@ -66,25 +82,46 @@ namespace TopLearn.Web.Controllers
 
             _userService.AddUser(user);
 
-            #region Send Activation Email
+            //Send Email
+            SendActiveEmail(user.Email);
 
+            ViewBag.UserName = _user.UserName;
+            ViewBag.Email = _user.Email;
+            ViewBag.Done = true;
+
+            sended = false;
+            _user = null;
+
+            return View(model);
+
+        }
+
+        [Route("/SendActiveEmail/{email}")]
+        public IActionResult SendActiveEmail(string email)
+        {
+
+            if (email == null)
+            {
+                return View("Register");
+            }
+
+            var user = _userService.GetUserByEmail(email);
+            _userService.UpdateUser(user);
+
+            //send email
             string body = _viewRenderService.RenderToStringAsync("_ActiveEmail", user);
             SendEmail.Send(user.Email, "فعال سازی حساب", body);
 
-            #endregion
-
-            ViewBag.UserName = user.UserName;
-            ViewBag.Email = user.Email;
-            ViewBag.Done = true;
-            return View(model);
-
+            _user = user;
+            sended = true;
+            return RedirectToAction("Register");
         }
 
         #endregion
 
         #region Login
 
-        [Route("Login")]
+        [Route("/Login")]
         public IActionResult Login()
         {
             LoginViewModel model = new LoginViewModel();
@@ -98,7 +135,7 @@ namespace TopLearn.Web.Controllers
             return View(model);
         }
 
-        [Route("Login")]
+        [Route("/Login")]
         [HttpPost]
         public IActionResult Login(LoginViewModel model)
         {
@@ -111,7 +148,13 @@ namespace TopLearn.Web.Controllers
 
             if (user != null)
             {
-
+                if (user.IsActive == false)
+                {
+                    ViewBag.UserName = user.UserName;
+                    ViewBag.Email = user.Email;
+                    ViewBag.notactive = true;
+                    return View();
+                }
                 //Login User
                 var claims = new List<Claim>()
                 {
@@ -151,7 +194,7 @@ namespace TopLearn.Web.Controllers
 
         #region Logout
 
-        [Route("Logout")]
+        [Route("/Logout")]
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -181,13 +224,13 @@ namespace TopLearn.Web.Controllers
 
         #region Forgot password
 
-        [Route("ForgotPassword")]
+        [Route("/ForgotPassword")]
         public IActionResult ForgotPassword()
         {
             return View();
         }
 
-        [Route("ForgotPassword")]
+        [Route("/ForgotPassword")]
         [HttpPost]
         public IActionResult ForgotPassword(ForgotPasswordViewModel model)
         {

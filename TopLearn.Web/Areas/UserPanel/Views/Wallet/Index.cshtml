@@ -1,6 +1,6 @@
 ﻿@using TopLearn.Core.Convertors
-@using TopLearn.Core.DTOs
-@model TopLearn.Core.DTOs.WalletChargeViewModel
+@using TopLearn.Core.DTOs.User
+@model WalletChargeViewModel
 @{
     ViewData["Title"] = "کیف پول";
 }
@@ -9,7 +9,7 @@
     <nav aria-label="breadcrumb">
         <ul class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">تاپ لرن</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a asp-action="Index" asp-controller="Wallet"> شارژ کیف پول </a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a asp-action="Index" asp-controller="Wallet"> کیف پول </a></li>
         </ul>
     </nav>
 </div>
@@ -75,6 +75,8 @@
                                             <td>مبلغ (تومان)</td>
                                             <td>تاریخ</td>
                                             <td>توضیحات</td>
+                                            <td>وضعیت پرداخت</td>
+                                            <td>فاکتور</td>
                                         </tr>
                                         @foreach (var item in list)
                                         {
@@ -95,6 +97,19 @@
                                                 </td>
                                                 <td>
                                                     @item.Description
+                                                </td>
+                                                <td>
+                                                    @if (item.IsPay)
+                                                    {
+                                                        <p style="color: green">موفق</p>
+                                                    }
+                                                    else
+                                                    {
+                                                    <p style="color: red">نا موفق</p>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <a href="@(item.FactorUrl)">جزئیات</a>
                                                 </td>
                                                 
                                             </tr>

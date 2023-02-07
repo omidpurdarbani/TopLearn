@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TopLearn.Core.Convertors;
-using TopLearn.Core.DTOs;
+using TopLearn.Core.DTOs.User;
 using TopLearn.Core.Generator;
 using TopLearn.Core.Security;
 using TopLearn.Core.Services.Interfaces;
@@ -127,12 +127,15 @@ namespace TopLearn.Core.Services.Services
                     }
                 }
 
+
                 profile.AvatarName = TextGenerator.GenerateUniqCode() + Path.GetExtension(profile.UserAvatar.FileName);
                 imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/UserAvatar", profile.AvatarName);
+
                 using (var stream = new FileStream(imagePath, FileMode.Create))
                 {
                     profile.UserAvatar.CopyTo(stream);
                 }
+
             }
 
             var user = GetUserByEmail(useremail);
@@ -184,18 +187,20 @@ namespace TopLearn.Core.Services.Services
         {
             int useId = GetUserIdByEmail(UserEmail);
             return _context.Wallets
-                .Where(w => w.IsPay && w.UserId == useId)
+                .Where(w => w.UserId == useId)
                 .Select(p => new WalletViewModel()
                 {
                     Amount = p.Amount,
                     DateTime = p.CreateDate,
                     Description = p.Description,
-                    Type = p.TypeId
+                    Type = p.TypeId,
+                    FactorUrl = p.FactorUrl,
+                    IsPay = p.IsPay
                 })
                 .ToList();
         }
 
-        public void ChargeWallet(string userEmail, int amount, string description, bool isPay = false)
+        public int ChargeWallet(string userEmail, int amount, string description, bool isPay = false)
         {
             Wallet wallet = new Wallet()
             {
@@ -206,13 +211,60 @@ namespace TopLearn.Core.Services.Services
                 TypeId = 1,
                 UserId = GetUserIdByEmail(userEmail)
             };
-            AddWallet(wallet);
+            return AddWallet(wallet);
+
         }
 
-        public void AddWallet(Wallet wallet)
+        public int AddWallet(Wallet wallet)
         {
             _context.Wallets.Add(wallet);
             _context.SaveChanges();
+
+            return wallet.WalletId;
+        }
+
+        public Wallet GetWalletByWalletId(int WalletId)
+        {
+            return _context.Wallets.Find(WalletId);
+        }
+
+        public void UpdateWalletFactorUrl(int WalletId, string FactorUrl)
+        {
+            Wallet wallet = GetWalletByWalletId(WalletId);
+            wallet.FactorUrl = FactorUrl + WalletId;
+            _context.Wallets.Update(wallet);
+            _context.SaveChanges();
+        }
+
+        public void UpdateWallet(Wallet wallet)
+        {
+            _context.Wallets.Update(wallet);
+            _context.SaveChanges();
+        }
+
+        public UsersForAdminViewModel GetUsers(int take = 10, int pageId = 1, string filterEmail = "", string filterUserName = "")
+        {
+            IQueryable<User> result = _context.users;
+
+            if (!string.IsNullOrWhiteSpace(filterEmail))
+            {
+                result = result.Where(u => u.Email.Contains(filterEmail));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filterUserName))
+            {
+                result = result.Where(u => u.UserName.Contains(filterUserName));
+            }
+
+            // Show item in page
+            int skip = (pageId - 1) * take;
+
+            UsersForAdminViewModel list = new UsersForAdminViewModel();
+            list.CurrentPage = pageId;
+            list.PageCount = result.Count() / take;
+            list.Users = result.OrderByDescending(u => u.RegisterDate).Skip(skip).Take(take).ToList();
+
+            return list;
         }
     }
 }

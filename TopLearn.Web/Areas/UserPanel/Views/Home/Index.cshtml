@@ -1,5 +1,5 @@
 ﻿@using TopLearn.Core.Convertors
-@model TopLearn.Core.DTOs.InformationUserViewModel
+@model TopLearn.Core.DTOs.User.InformationUserViewModel
 @{
     ViewData["Title"] = "پنل کاربری " + Model.UserName;
 }
@@ -26,7 +26,7 @@
                                 <h3 style="font-size: 20px"> اطلاعات کاربری </h3>
                                 <ul>
                                     <li style="font-size: 18px"> <i class="zmdi zmdi-account"></i> نام و نام خانوادگی : @Model.UserName </li>
-                                    <li style="font-size: 18px"> <i class="zmdi zmdi-email"></i> ایمیل : @Model.Email </li>
+                                    <li style="font-size: 18px"> <i class="zmdi zmdi-email"></i> ایمیل : @Model.Email</li>
                                     <li style="font-size: 18px"> <i class="zmdi zmdi-calendar-check"></i> تاریخ عضویت : @Model.RegisterDate.ToShamsi() </li>
                                     <li style="font-size: 18px"> <i class="zmdi zmdi-money"></i> موجودی حساب : @Model.Wallet تومان</li>
                                 </ul>

@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace TopLearn.Core.DTOs
+namespace TopLearn.Core.DTOs.User
 {
     public class InformationUserViewModel
     {

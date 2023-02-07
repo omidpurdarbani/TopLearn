@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using TopLearn.Core.DTOs;
+using TopLearn.Core.DTOs.User;
 using TopLearn.Core.Services.Interfaces;
 
 namespace TopLearn.Web.Areas.UserPanel.Controllers
@@ -60,6 +60,9 @@ namespace TopLearn.Web.Areas.UserPanel.Controllers
 
 
             _userService.EditProfile(User.FindFirstValue(ClaimTypes.Email), model);
+
+            //LogOut
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             ViewBag.Done = true;
             return View(_userService.GetDataForEditUserProfile(User.FindFirstValue(ClaimTypes.Email)));

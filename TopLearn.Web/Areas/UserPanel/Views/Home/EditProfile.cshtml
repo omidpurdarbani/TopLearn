@@ -1,4 +1,4 @@
-﻿@model TopLearn.Core.DTOs.EditProfileViewModel
+﻿@model TopLearn.Core.DTOs.User.EditProfileViewModel
 @{
     ViewData["Title"] = "ویرایش حساب کاربری";
 }
@@ -13,7 +13,6 @@
         </ul>
     </nav>
 </div>
-
 
 
 <main>
@@ -40,9 +39,10 @@
                                     <br />
                                     <div class="text-center">
                                         <p style="font-size: 25px;">حساب کاربری شما با موفقیت ویرایش شد !</p>
+                                        <p style="font-size: 20px;">برای اعمال تغییرات , لطفا دوباره وارد حساب خود شوید .</p>
                                     </div>
                                     <div class="link">
-                                        <a href="/userpanel" style="font-size: 18px"> <i class="zmdi zmdi-account"></i> پنل کاربری </a>
+                                        <a href="/login" style="font-size: 18px"> <i class="zmdi zmdi-account"></i> ورود </a>
                                     </div>
 
                                 </div>

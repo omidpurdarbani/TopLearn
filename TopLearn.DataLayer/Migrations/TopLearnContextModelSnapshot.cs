@@ -99,6 +99,8 @@ namespace TopLearn.DataLayer.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(500);
 
+                    b.Property<string>("FactorURL");
+
                     b.Property<bool>("IsPay");
 
                     b.Property<int>("TypeId");

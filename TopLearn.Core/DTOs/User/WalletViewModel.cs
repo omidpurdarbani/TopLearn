@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace TopLearn.Core.DTOs
+namespace TopLearn.Core.DTOs.User
 {
     public class WalletChargeViewModel
     {
@@ -15,6 +15,8 @@ namespace TopLearn.Core.DTOs
         public int Amount { get; set; }
         public int Type { get; set; }
         public string Description { get; set; }
+        public bool IsPay { get; set; }
+        public string FactorUrl { get; set; }
         public DateTime DateTime { get; set; }
     }
 }

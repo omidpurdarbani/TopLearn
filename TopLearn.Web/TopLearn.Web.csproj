@@ -30,6 +30,7 @@
 	  </PackageReference>
 	  <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
 	  <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+	  <PackageReference Include="ZarinpalSandbox" Version="2.0.4" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using TopLearn.Core.DTOs;
+using TopLearn.Core.DTOs.User;
 using TopLearn.DataLayer.Entities.User;
 using TopLearn.DataLayer.Entities.Wallet;
 
@@ -44,16 +44,27 @@ namespace TopLearn.Core.Services.Interfaces
 
         #endregion
 
-
         #region Wallet
 
         int UserWalletBalance(string UserEmail);
 
         List<WalletViewModel> GetUserWallet(string UserEmail);
 
-        void ChargeWallet(string userEmail, int amount, string description, bool isPay = false);
+        int ChargeWallet(string userEmail, int amount, string description, bool isPay = false);
 
-        void AddWallet(Wallet wallet);
+        int AddWallet(Wallet wallet);
+
+        Wallet GetWalletByWalletId(int WalletId);
+
+        void UpdateWalletFactorUrl(int WalletId, string FactorUrl);
+
+        void UpdateWallet(Wallet wallet);
+
+        #endregion
+
+        #region Admin Panel
+
+        UsersForAdminViewModel GetUsers(int take = 10, int pageId = 1, string filterEmail = "", string filterUserName = "");
 
         #endregion
 

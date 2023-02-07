@@ -1,0 +1,39 @@
+﻿@using System.Security.Claims
+@using TopLearn.Core.Convertors
+@using TopLearn.Core.DTOs.User
+@using TopLearn.Core.Services.Interfaces
+@inject IUserService _UserService
+
+@{
+    SideBarUserPanelViewModel Model = _UserService.GetSideBarUserPanelData(User.FindFirstValue(ClaimTypes.Email));
+}
+
+<div class="col-md-3 col-sm-4 col-xs-12">
+    <aside>
+
+        <div class="avatar-layer">
+            <div class="img-layer">
+                <a href="/userpanel" class="change-image"><i class="zmdi zmdi-info"></i></a>
+                <img src="/UserAvatar/@(Model.ImageName)" >
+            </div>
+            <div class="detail">
+                <span style="font-size: 20px"> @Model.UserName </span>
+                <span> عضویت : @Model.RegisterDate.ToShamsi() </span>
+            </div>
+        </div>
+
+        <section>
+            <header><h3 style="font-size: 25px"> میز کار </h3></header>
+            <div class="inner">
+                <ul>
+                    <li><a href="/userpanel" style="font-size: 18px"> مشاهده حساب کاربری </a></li>
+                    <li><a href="/EditProfile" style="font-size: 18px"> ویرایش حساب کاربری </a></li>
+                    <li><a href="/wallet" style="font-size: 18px"> کیف پول </a></li>
+                    <li><a href="/ChangePassword" style="font-size: 18px"> تغییر کلمه عبور </a></li>
+                    <li><a href="" style="font-size: 18px"> تنظیمات حساب  </a></li>
+                    <li><a href="/logout" style="font-size: 18px"> خروج از حساب  </a></li>
+                </ul>
+            </div>
+        </section>
+    </aside>
+</div>

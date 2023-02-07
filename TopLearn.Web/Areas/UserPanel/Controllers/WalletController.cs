@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using TopLearn.Core.DTOs;
+using TopLearn.Core.DTOs.User;
 using TopLearn.Core.Services.Interfaces;
 
 namespace TopLearn.Web.Areas.UserPanel.Controllers
@@ -47,10 +47,23 @@ namespace TopLearn.Web.Areas.UserPanel.Controllers
                 return View(charge);
             }
 
-            //ToDo: Online payment
+
+            int walletId = _userService.ChargeWallet(userEmail, charge.Amount, "شارژ حساب", false);
+            _userService.UpdateWalletFactorUrl(walletId, "https://localhost:44349/Factor/");
+
+            #region Online Payment
+
+            var payment = new ZarinpalSandbox.Payment(charge.Amount);
+            var res = payment.PaymentRequest("شارژ حساب", "https://localhost:44349/Factor/" + walletId,
+                "omidprojecttest@gmail.com");
+
+            if (res.Result.Status == 100)
             {
-                _userService.ChargeWallet(userEmail, charge.Amount, "شارژ حساب", true);
+                return Redirect("https://sandbox.zarinpal.com/pg/Startpay/" + res.Result.Authority);
             }
+
+            #endregion
+
 
             ViewBag.ListWallet = _userService.GetUserWallet(userEmail);
             ViewBag.Balance = _userService.UserWalletBalance(userEmail);

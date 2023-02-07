@@ -30,6 +30,8 @@ namespace TopLearn.DataLayer.Entities.Wallet
         [MaxLength(500, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string Description { get; set; }
 
+        public string FactorUrl { get; set; }
+
         [Display(Name = "تایید شده")]
         public bool IsPay { get; set; }
 

@@ -1,0 +1,72 @@
+﻿@{
+    ViewData["Title"] = "فاکتور شارژ کیف پول";
+}
+
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">تاپ لرن</a></li>
+            <li class="breadcrumb-item"><a href="/UserPanel">پنل کاربری</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a asp-action="Factor" asp-route-id="@ViewBag.id"> فاکتور شماره @ViewBag.id</a></li>
+        </ul>
+    </nav>
+</div>
+
+
+<main>
+    <div class="container">
+        <div class="user-account">
+            <div class="row">
+                <partial name="_SideBar"/>
+                <div class="col-md-9 col-sm-8 col-xs-12">
+                    <section class="user-account-content">
+                        <header style="height: 60px;">
+                            <h1 style="font-size: 25px; width: 50%; float: right; padding: 10px;"> کیف پول </h1>
+                            @if (ViewBag.Balance!=null)
+                            {
+                                <h1 style="font-size: 20px;width: 50%;float: right; padding: 10px;text-align: left">موجودی شما : @ViewBag.Balance تومان</h1>
+                            }
+                        </header>
+                        <div class="inner form-layer">
+                            <div class="row">
+
+                                @if (ViewBag.IsSuccess == true)
+                                {
+                                    <div class="alert alert-success">
+                                        <h2 style="font-size: 25px">@ViewBag.UserName عزیز</h2>
+                                        <br />
+                                        <div class="text-center">
+                                            <p style="font-size: 25px">شارژ کیف پول شما با موفقیت انجام شده می باشد .</p>
+                                            <p style="font-size: 20px">کد پیگیری : @ViewBag.code</p>
+                                            <p style="font-size: 20px">تاریخ پرداخت : @ViewBag.date</p>
+                                            <p style="font-size: 20px">ساعت پرداخت : @ViewBag.time</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="link">
+                                        <a href="/wallet" style="font-size: 18px"> <i class="zmdi zmdi-account"></i> کیف پول </a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-danger">
+                                        <h2 style="font-size: 25px">@ViewBag.UserName عزیز</h2>
+                                        <br />
+                                        <div class="text-center">
+                                            <p style="font-size: 25px">شارژ کیف پول شما با مشکل مواجه شده می باشد ! <br>جهت کسب اطلاعات بیشتر می توانید به پشتیبانی وب سایت مراجعه نمایید .</p>
+                                            <p style="font-size: 20px">تاریخ ایجاد تراکنش : @ViewBag.date</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="link">
+                                        <a href="/wallet" style="font-size: 18px"> <i class="zmdi zmdi-account"></i> کیف پول </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

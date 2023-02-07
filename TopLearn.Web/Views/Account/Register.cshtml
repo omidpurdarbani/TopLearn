@@ -1,4 +1,4 @@
-﻿@model TopLearn.Core.DTOs.RegisterViewModel
+﻿@model TopLearn.Core.DTOs.User.RegisterViewModel
 @{
 
     ViewData["Title"] = "عضویت در سایت";
@@ -15,24 +15,41 @@
 </div>
 
 <main class="client-page">
-    <div class="container-content">
+    <div class="container-content" style="width: 500px">
 
         <header><h2> عضویت در سایت </h2></header>
-        
-        @if(ViewBag.Done==true)
+        @if (ViewBag.Resend==true)
         {
             <div class="alert alert-success">
                 <h2 style="font-size: 25px">@ViewBag.UserName عزیز</h2>
-            <br/>
+                <br />
+                <div class="text-center">
+                    <p style="font-size: 25px">لینک تایید ایمیل شما مجددا ارسال شد!</p>
+                    <br />
+                    <p style="font-size: 20px">جهت تایید حساب کاربری خود از طریق لینکی که به آدرس ایمیل @ViewBag.Email ارسال شد , اقدام نمایید .</p>
+                </div>
+            </div>
+            <br />
+            <p style="font-size: 18px"> * برای ارسال مجددا لینک تایید ایمیل , روی ارسال مجدد کلیک نمایید * </p>
+            <div class="link">
+                <a href="/SendActiveEmail/@ViewBag.Email" style="font-size: 18px"> <i class="zmdi zmdi-mail-send"></i> ارسال مجدد </a>
+            </div>
+        }
+        else if (ViewBag.Done == true)
+        {
+            <div class="alert alert-success">
+                <h2 style="font-size: 25px">@ViewBag.UserName عزیز</h2>
+                <br/>
                 <div class="text-center">
                     <p style="font-size: 25px">ثبت نام شما با موفقیت انجام گردید!</p>
                     <br/>
                     <p style="font-size: 20px">جهت تایید حساب کاربری خود از طریق لینکی که به آدرس ایمیل @ViewBag.Email ارسال شد , اقدام نمایید .</p>
                 </div>
             </div>
-            
+            <br/>
+            <p style="font-size: 18px"> * برای ارسال مجددا لینک تایید ایمیل , روی ارسال مجدد کلیک نمایید * </p>
             <div class="link">
-                <a href="/login" style="font-size: 18px"> <i class="zmdi zmdi-account"></i> ورود به سایت </a>
+                <a href="/SendActiveEmail/@ViewBag.Email" style="font-size: 18px"> <i class="zmdi zmdi-mail-send"></i> ارسال مجدد </a>
             </div>
         }
         else
