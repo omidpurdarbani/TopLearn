@@ -56,6 +56,8 @@ namespace TopLearn.Web
 
             services.AddTransient<IViewRenderService, RenderViewToString>();
 
+            services.AddTransient<IPermissionService, PermissionService>();
+
             #endregion
 
         }

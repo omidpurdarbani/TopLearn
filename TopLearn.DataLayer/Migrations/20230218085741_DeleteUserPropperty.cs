@@ -2,21 +2,22 @@
 
 namespace TopLearn.DataLayer.Migrations
 {
-    public partial class addfactorurltowallet : Migration
+    public partial class DeleteUserPropperty : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "FactorURL",
-                table: "Wallets",
-                nullable: true);
+            migrationBuilder.AddColumn<bool>(
+                name: "IsDelete",
+                table: "Users",
+                nullable: false,
+                defaultValue: false);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "FactorURL",
-                table: "Wallets");
+                name: "IsDelete",
+                table: "Users");
         }
     }
 }

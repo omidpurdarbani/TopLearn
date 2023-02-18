@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace TopLearn.DataLayer.Entities.User
 {
-    public class Role
+    public class Roles
     {
-        public Role()
+        public Roles()
         {
 
         }
@@ -17,12 +15,14 @@ namespace TopLearn.DataLayer.Entities.User
 
         [Display(Name = "نام نقش")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
-        [MaxLength(200,ErrorMessage ="{0} نمی تواند بیشتر از {1} کاراکتر باشد")]
+        [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد")]
         public string RoleTitle { get; set; }
 
         #region Relations
 
-        public virtual List<UserRole> userRoles { get; set; }
+        public virtual List<User> UserRoles { get; set; }
+
+        public virtual List<RolePermissions> RolePermissions { get; set; }
 
         #endregion
     }

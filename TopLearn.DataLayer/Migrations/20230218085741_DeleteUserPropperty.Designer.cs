@@ -10,8 +10,8 @@ using TopLearn.DataLayer.Context;
 namespace TopLearn.DataLayer.Migrations
 {
     [DbContext(typeof(TopLearnContext))]
-    [Migration("20221205174806_add-factor-url-to-wallet")]
-    partial class addfactorurltowallet
+    [Migration("20230218085741_DeleteUserPropperty")]
+    partial class DeleteUserPropperty
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,39 @@ namespace TopLearn.DataLayer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("TopLearn.DataLayer.Entities.User.Role", b =>
+            modelBuilder.Entity("TopLearn.DataLayer.Entities.User.Permissions", b =>
+                {
+                    b.Property<int>("PermissionId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("PermissionId");
+
+                    b.ToTable("Permissions");
+                });
+
+            modelBuilder.Entity("TopLearn.DataLayer.Entities.User.RolePermissions", b =>
+                {
+                    b.Property<int>("RP_ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("PermissionId");
+
+                    b.Property<int>("RoleId");
+
+                    b.HasKey("RP_ID");
+
+                    b.HasIndex("PermissionId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("RolePermissions");
+                });
+
+            modelBuilder.Entity("TopLearn.DataLayer.Entities.User.Roles", b =>
                 {
                     b.Property<int>("RoleId")
                         .ValueGeneratedOnAdd()
@@ -33,7 +65,7 @@ namespace TopLearn.DataLayer.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("roles");
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("TopLearn.DataLayer.Entities.User.User", b =>
@@ -51,6 +83,8 @@ namespace TopLearn.DataLayer.Migrations
 
                     b.Property<bool>("IsActive");
 
+                    b.Property<bool>("IsDelete");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(200);
@@ -64,28 +98,13 @@ namespace TopLearn.DataLayer.Migrations
                         .IsRequired()
                         .HasMaxLength(200);
 
+                    b.Property<int>("UserRole");
+
                     b.HasKey("UserId");
 
-                    b.ToTable("users");
-                });
+                    b.HasIndex("UserRole");
 
-            modelBuilder.Entity("TopLearn.DataLayer.Entities.User.UserRole", b =>
-                {
-                    b.Property<int>("UR_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("RoleId");
-
-                    b.Property<int>("UserId");
-
-                    b.HasKey("UR_Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserRoles");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("TopLearn.DataLayer.Entities.Wallet.Wallet", b =>
@@ -101,7 +120,7 @@ namespace TopLearn.DataLayer.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(500);
 
-                    b.Property<string>("FactorURL");
+                    b.Property<string>("FactorUrl");
 
                     b.Property<bool>("IsPay");
 
@@ -131,16 +150,24 @@ namespace TopLearn.DataLayer.Migrations
                     b.ToTable("WalletTypes");
                 });
 
-            modelBuilder.Entity("TopLearn.DataLayer.Entities.User.UserRole", b =>
+            modelBuilder.Entity("TopLearn.DataLayer.Entities.User.RolePermissions", b =>
                 {
-                    b.HasOne("TopLearn.DataLayer.Entities.User.Role", "Role")
-                        .WithMany("userRoles")
-                        .HasForeignKey("RoleId")
+                    b.HasOne("TopLearn.DataLayer.Entities.User.Permissions", "Permission")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("TopLearn.DataLayer.Entities.User.User", "User")
-                        .WithMany("userRoles")
-                        .HasForeignKey("UserId")
+                    b.HasOne("TopLearn.DataLayer.Entities.User.Roles", "Role")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("TopLearn.DataLayer.Entities.User.User", b =>
+                {
+                    b.HasOne("TopLearn.DataLayer.Entities.User.Roles", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserRole")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

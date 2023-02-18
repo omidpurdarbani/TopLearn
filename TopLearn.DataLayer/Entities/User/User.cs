@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TopLearn.DataLayer.Entities.User
 {
@@ -44,9 +45,15 @@ namespace TopLearn.DataLayer.Entities.User
         [Display(Name = "تاریخ ثبت نام")]
         public DateTime RegisterDate { get; set; }
 
+        [ForeignKey("Role")]
+        public int UserRole { get; set; }
+
+        public bool IsDelete { get; set; }
+
+
         #region Relations
 
-        public virtual List<UserRole> userRoles { get; set; }
+        public virtual Roles Role { get; set; }
 
         public virtual List<Wallet.Wallet> Wallets { get; set; }
 

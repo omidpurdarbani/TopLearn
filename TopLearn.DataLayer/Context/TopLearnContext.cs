@@ -13,11 +13,13 @@ namespace TopLearn.DataLayer.Context
 
         #region User
 
-        public DbSet<User> users { get; set; }
+        public DbSet<User> Users { get; set; }
 
-        public DbSet<Role> roles { get; set; }
+        public DbSet<Roles> Roles { get; set; }
 
-        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Permissions> Permissions { get; set; }
+
+        public DbSet<RolePermissions> RolePermissions { get; set; }
 
         #endregion
 
@@ -28,6 +30,14 @@ namespace TopLearn.DataLayer.Context
         public DbSet<Wallet> Wallets { get; set; }
 
         #endregion
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>()
+                .HasQueryFilter(u => u.IsDelete == false);
+
+            base.OnModelCreating(modelBuilder);
+        }
 
     }
 }

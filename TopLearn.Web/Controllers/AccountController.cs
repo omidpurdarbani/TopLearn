@@ -76,8 +76,9 @@ namespace TopLearn.Web.Controllers
                 IsActive = false,
                 Password = PasswordHelper.EncodePasswordMd5(model.Password),
                 RegisterDate = DateTime.Now,
-                UserAvatar = "Defult.jpg",
-                UserName = model.UserName
+                UserAvatar = "Default.jpg",
+                UserName = model.UserName,
+                UserRole = 3
             };
 
             _userService.AddUser(user);
@@ -106,6 +107,12 @@ namespace TopLearn.Web.Controllers
             }
 
             var user = _userService.GetUserByEmail(email);
+
+            if (user == null)
+            {
+                return Redirect("/Register");
+            }
+
             _userService.UpdateUser(user);
 
             //send email

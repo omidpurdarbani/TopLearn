@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using TopLearn.Core.DTOs.User;
 using TopLearn.DataLayer.Entities.User;
 using TopLearn.DataLayer.Entities.Wallet;
@@ -10,19 +11,23 @@ namespace TopLearn.Core.Services.Interfaces
 
         #region User account
 
+        User GetUserByUserId(int userId);
+
         bool IsExistEmail(string email);
 
-        int AddUser(User user);
+        bool IsUserExistByUserId(int userId);
 
-        User LoginUser(string Email, string Password);
+        void AddUser(User user);
 
-        User ActiveAccount(string ActiveCode);
+        User LoginUser(string email, string password);
 
-        User GetUserByEmail(string Email);
+        User ActiveAccount(string activeCode);
 
-        int GetUserIdByEmail(string Email);
+        User GetUserByEmail(string email);
 
-        User GetUserByActiveCode(string ActiveCode);
+        int GetUserIdByEmail(string email);
+
+        User GetUserByActiveCode(string activeCode);
 
         void UpdateUser(User user);
 
@@ -30,33 +35,35 @@ namespace TopLearn.Core.Services.Interfaces
 
         #region User panel
 
-        InformationUserViewModel GetUserInformation(string UserEmail);
+        InformationUserViewModel GetUserInformation(string userEmail);
 
-        SideBarUserPanelViewModel GetSideBarUserPanelData(string UserEmail);
+        SideBarUserPanelViewModel GetSideBarUserPanelData(string userEmail);
 
-        EditProfileViewModel GetDataForEditUserProfile(string UserEmail);
+        EditProfileViewModel GetDataForEditUserProfile(string userEmail);
 
-        void EditProfile(string UserEmail, EditProfileViewModel profile);
+        void EditProfile(string userEmail, EditProfileViewModel profile);
 
-        bool CompareCurrentPassword(string UserEmail, string CurrentPassword);
+        bool CompareCurrentPassword(string userEmail, string currentPassword);
 
-        void ChangeUserPassword(string UserEmail, string NewPassword);
+        void ChangeUserPassword(string userEmail, string newPassword);
+
+        string SaveUserAvatar(IFormFile img, string avatar = null);
 
         #endregion
 
         #region Wallet
 
-        int UserWalletBalance(string UserEmail);
+        int UserWalletBalance(string userEmail);
 
-        List<WalletViewModel> GetUserWallet(string UserEmail);
+        List<WalletViewModel> GetUserWallet(string userEmail);
 
         int ChargeWallet(string userEmail, int amount, string description, bool isPay = false);
 
         int AddWallet(Wallet wallet);
 
-        Wallet GetWalletByWalletId(int WalletId);
+        Wallet GetWalletByWalletId(int walletId);
 
-        void UpdateWalletFactorUrl(int WalletId, string FactorUrl);
+        void UpdateWalletFactorUrl(int walletId, string factorUrl);
 
         void UpdateWallet(Wallet wallet);
 
@@ -65,6 +72,22 @@ namespace TopLearn.Core.Services.Interfaces
         #region Admin Panel
 
         UsersForAdminViewModel GetUsers(int take = 10, int pageId = 1, string filterEmail = "", string filterUserName = "");
+
+        UsersForAdminViewModel GetDeletedUsers(int take = 10, int pageId = 1, string filterEmail = "", string filterUserName = "");
+
+        void AddUserFromAdmin(CreateUserViewModel user);
+
+        EditUserViewModel GetUserInfoForEditUser(int userId);
+
+        void EditUserFromAdmin(EditUserViewModel user, int userId);
+
+        DeleteUserViewModel GetUserInfoForDeleteUser(int userId);
+
+        void DeleteUserFromAdmin(int userId);
+
+        RestoreUserViewModel GetUserInfoForRestoreUser(int userId);
+
+        void RestoreUserFromAdmin(int userId);
 
         #endregion
 

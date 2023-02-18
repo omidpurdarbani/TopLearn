@@ -61,7 +61,7 @@
                                         </div>
                                         <br/>
                                         <div class="col-md-7 col-sm-8 col-xs-12">
-                                            <div class="">
+                                            <div class="row">
                                                 <label style="font-size: 18px">
                                                     عکس پروفایل :
                                                     <br />
@@ -75,10 +75,10 @@
                                                     <br />
                                                     <span asp-validation-for="OldAvatar"></span>
                                                     <br/>
-                                                    <input asp-for="UserAvatar" id="File" type="file" onchange="PreviewImage()" class="form-control">
-                                                    <br />
                                                     <img id="uploadPreview" class="thumbnail" style="width: 250px;max-width: 250px" src="" />
                                                     <br/>
+                                                    <input asp-for="UserAvatar" id="File" type="file" onchange="PreviewImage()" class="form-control">
+                                                    <br />
                                                     <span asp-validation-for="UserAvatar"></span>
                                                 </label>
                                             </div>
@@ -108,7 +108,10 @@
         </div>
     </div>
 </main>
-<script>
+
+@section Scripts
+{
+    <script>
     var checkbox = document.getElementById("CheckBox");
     var color = document.getElementById("color");
     var file = document.getElementById("File");
@@ -117,8 +120,10 @@
 
     if (checkbox.checked == true) {
         file.disabled = true;
+        file.value = "";
         color.style.color = 'black';
         uploadPreview.style.display = "none";
+        uploadPreview.src="";
         img.style.display = "block";
     }
 
@@ -137,7 +142,9 @@
             img.style.display = "block";
             color.style.color = 'black';
             file.disabled = true;
+            file.value = "";
             uploadPreview.style.display = "none";
+                uploadPreview.src = "";
         }
         if (checkbox.checked == false) {
             img.style.display = "none";
@@ -150,7 +157,7 @@
 
 </script>
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
     function PreviewImage() {
         var oFReader = new FileReader();
@@ -162,3 +169,4 @@
     };
 
 </script>
+}
