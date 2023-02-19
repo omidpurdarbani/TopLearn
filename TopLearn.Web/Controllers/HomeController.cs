@@ -46,7 +46,7 @@ namespace TopLearn.Web.Controllers
             if (HttpContext.Request.Query["Status"] != "" &&
                 HttpContext.Request.Query["Status"]
                     .ToString()
-                    .ToLower() == "ok" &&
+                    .ToLower().Contains("ok") &&
                 HttpContext.Request.Query["Authorith"] != "")
             {
                 string authority = HttpContext.Request.Query["Authority"];
@@ -55,7 +55,7 @@ namespace TopLearn.Web.Controllers
 
                 var res = payment.Verification(authority).Result;
 
-                if (res.Status == 100)
+                if (res.Status == 100 || res.Status == 101)
                 {
                     _userService.UpdateWalletFactorUrl(id, HttpContext.Request.GetDisplayUrl());
                     _wallet.IsPay = true;

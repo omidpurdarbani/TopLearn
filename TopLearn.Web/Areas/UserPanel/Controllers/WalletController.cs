@@ -25,7 +25,9 @@ namespace TopLearn.Web.Areas.UserPanel.Controllers
         {
             string userEmail = User.FindFirstValue(ClaimTypes.Email);
 
-            ViewBag.ListWallet = _userService.GetUserWallet(userEmail);
+            var Wallets = _userService.GetUserWallet(userEmail);
+            Wallets.Reverse(0, Wallets.Count);
+            ViewBag.ListWallet = Wallets;
             ViewBag.Balance = _userService.UserWalletBalance(userEmail);
 
             return View();
@@ -59,7 +61,7 @@ namespace TopLearn.Web.Areas.UserPanel.Controllers
 
             if (res.Result.Status == 100)
             {
-                return Redirect("https://sandbox.zarinpal.com/pg/Startpay/" + res.Result.Authority);
+                return Redirect("https://sandbox.zarinpal.com/pg/StartPay/" + res.Result.Authority);
             }
 
             #endregion

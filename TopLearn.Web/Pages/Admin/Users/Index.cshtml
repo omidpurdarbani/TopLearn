@@ -15,19 +15,27 @@
             <div class="panel-heading">
                 @if (!string.IsNullOrWhiteSpace(HttpContext.Request.Query["filterUsername"]) && !string.IsNullOrWhiteSpace(HttpContext.Request.Query["filterEmail"]))
                 {
-                    <p style="font-size: 20px"><span style="font-size: 20px;font-weight: bold">نمایش نتیجه برای :</span> <br /> نام کاربری : @HttpContext.Request.Query["filterUsername"] <br/> ایمیل : @HttpContext.Request.Query["filterEmail"]</p>
+                    <p style="font-size: 20px; font-weight:bold "> نمایش نتایج برای : </p>
+                    <p style="font-size: 18px; font-weight:bold "> نام کاربری : @HttpContext.Request.Query["filterUsername"]</p>
+                    <p style="font-size: 18px; font-weight:bold ">ایمیل: @HttpContext.Request.Query["filterEmail"]</p>
+                    <p style="font-size: 18px; font-weight:bold ">تعداد : @Model.UsersForAdminViewModel.Users.Count</p>
                 }
                 else if (!string.IsNullOrWhiteSpace(HttpContext.Request.Query["filterUsername"]))
                 {
-                    <p style="font-size: 18px">نمایش نتیجه برای نام کاربری : @HttpContext.Request.Query["filterUsername"]</p>
+                    <p style="font-size: 20px">نمایش نتایج برای  :</p>
+                    <p style="font-size: 18px; font-weight:bold "> نام کاربری : @HttpContext.Request.Query["filterUsername"]</p>
+                    <p style="font-size: 18px; font-weight:bold ">تعداد : @Model.UsersForAdminViewModel.Users.Count</p>
                 }
                 else if (!string.IsNullOrWhiteSpace(HttpContext.Request.Query["filterEmail"]))
                 {
-                    <p style="font-size: 18px">نمایش نتیجه برای ایمیل : @HttpContext.Request.Query["filterEmail"]</p>
+                    <p style="font-size: 20px">نمایش نتایج برای : </p>
+                    <p style="font-size: 18px; font-weight:bold "> ایمیل : @HttpContext.Request.Query["filterEmail"]</p>
+                    <p style="font-size: 18px; font-weight:bold ">تعداد : @Model.UsersForAdminViewModel.Users.Count</p>
                 }
                 else
                 {
-                    <p style="font-size: 20px; font-weight:bold ">همه کاربران</p>
+                    <p style="font-size: 20px; font-weight:bold ">نمایش نتایج</p>
+                    <p style="font-size: 18px; font-weight:bold ">تعداد : @Model.UsersForAdminViewModel.Users.Count</p>
                 }
             </div>
             <!-- /.panel-heading -->
@@ -60,7 +68,7 @@
                             <a asp-page="CreateUser" style="font-size: 2rem" class="btn btn-info">
                                 افزودن کاربر جدید
                             </a>
-                            <a asp-page="DeletedUsers" style="font-size: 2rem" class="btn btn-danger">
+                            <a asp-page="DeletedUsers" style="font-size: 2rem;margin-right: 0.5vw" class="btn btn-danger">
                                 نمایش کاربران حذف شده
                             </a>
                         </div>
