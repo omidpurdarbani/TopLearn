@@ -53,11 +53,16 @@ namespace TopLearn.Web.Areas.UserPanel.Controllers
             int walletId = _userService.ChargeWallet(userEmail, charge.Amount, "شارژ حساب", false);
             _userService.UpdateWalletFactorUrl(walletId, "https://localhost:44349/Factor/");
 
+            //int walletId = _userService.ChargeWallet(userEmail, charge.Amount, "شارژ حساب", false);
+            //_userService.UpdateWalletFactorUrl(walletId, "https://toplearn.somee.com/Factor/");
+
             #region Online Payment
 
             var payment = new ZarinpalSandbox.Payment(charge.Amount);
             var res = payment.PaymentRequest("شارژ حساب", "https://localhost:44349/Factor/" + walletId,
                 "omidprojecttest@gmail.com");
+            //var res = payment.PaymentRequest("شارژ حساب", "https://toplearn.somee.com/Factor/" + walletId,
+            //    "omidprojecttest@gmail.com");
 
             if (res.Result.Status == 100)
             {

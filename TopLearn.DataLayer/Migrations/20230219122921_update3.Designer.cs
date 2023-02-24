@@ -10,8 +10,8 @@ using TopLearn.DataLayer.Context;
 namespace TopLearn.DataLayer.Migrations
 {
     [DbContext(typeof(TopLearnContext))]
-    [Migration("20230218085741_DeleteUserPropperty")]
-    partial class DeleteUserPropperty
+    [Migration("20230219122921_update3")]
+    partial class update3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

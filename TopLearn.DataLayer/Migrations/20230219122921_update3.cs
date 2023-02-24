@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TopLearn.DataLayer.Migrations
 {
-    public partial class Update : Migration
+    public partial class update3 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -85,7 +85,8 @@ namespace TopLearn.DataLayer.Migrations
                     IsActive = table.Column<bool>(nullable: false),
                     UserAvatar = table.Column<string>(maxLength: 200, nullable: true),
                     RegisterDate = table.Column<DateTime>(nullable: false),
-                    UserRole = table.Column<int>(nullable: false)
+                    UserRole = table.Column<int>(nullable: false),
+                    IsDelete = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {

@@ -18,9 +18,17 @@ body{
   background-color: #f2f2f2
 }
 
+a[href*='somee'] {
+    display: none !important;
+}
+div[style='height: 65px;'], div[style='opacity: 0.9; z-index: 2147483647; position: fixed; left: 0px; bottom: 0px; height: 65px; right: 0px; display: block; width: 100%; background-color: #202020; margin: 0px; padding: 0px;'], div[style='position: fixed; z-index: 2147483647; left: 0px; bottom: 0px; height: 65px; right: 0px; display: block; width: 100%; background-color: transparent; margin: 0px; padding: 0px;'] {
+    display: none !important;
+}
 /***********Default setting************/
-
-a:link,a:hover,a:active{text-decoration: none; outline: 0 !important}
+a:link, a:hover, a:active {
+    text-decoration: none;
+    outline: 0 !important
+}
 i,span,label,a{display: inline-block; font-weight: normal;}
 ul{list-style: none !important; list-style-type: none !important; margin: 0; padding: 0}
 h1,h2,h3,h4,h5,h6{font-size: 15px; margin: 0; padding: 0}
