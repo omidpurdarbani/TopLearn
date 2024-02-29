@@ -1,54 +1,29 @@
-﻿@model string
-
+﻿
 @{
-    ViewData["Title"] = "فعال سازی حساب کاربری";
+    ViewData["Title"] = "فعالسازی";
 }
 
+<nav aria-label="breadcrumb">
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">تاپ لرن</a></li>
+        <li class="breadcrumb-item active" aria-current="page">فعالسازی حساب کاربری</li>
+    </ul>
+</nav>
+
 <div class="container">
-    <nav aria-label="breadcrumb">
-        <ul class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">تاپ لرن</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a asp-action="ActiveAccount">فعال سازی حساب کاربری</a></li>
-        </ul>
-    </nav>
+    @if (ViewBag.IsActive)
+    {
+        <div class="alert alert-success">
+            <p>حساب کاربری شما با موفقیت فعال شد</p>
+            <p>
+                <a href="/Login">ورود به سایت</a>
+            </p>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <p>حساب کاربری با مشخصات ارسال شده یافت نشد</p>
+        </div>
+    }
 </div>
-
-
-<main class="client-page">
-    <div class="container-content">
-
-        @if (Model != null)
-        {
-            <div class="alert alert-success">
-                <h2 style="font-size: 25px">@Model عزیز</h2>
-                <br/>
-                <div class="text-center">
-                    <p style="font-size: 25px;">حساب کاربری شما با موفقیت فعال شد !</p>
-                </div> 
-                <div class="link">
-                    <a href="/Login" style="font-size: 18px"> <i class="zmdi zmdi-account"></i> ورود به سایت </a>
-                </div>
-
-            </div>
-        }
-        else
-        {
-            <div class="alert alert-danger" style="width: 100%">
-
-
-                <div class="text-center">
-                    <p style="font-size: 25px;">حساب کاربری یافت نشد !</p>
-                    <h3 style="font-size: 20px">لینک شما نامعتبر می باشد</h3>
-                </div>
-                <br/>
-
-                <div class="link">
-                    <a href="/" style="font-size: 18px"> <i class="zmdi zmdi-account"></i> صفحه اصلی </a>
-                </div>
-
-            </div>
-        }
-
-
-    </div>
-</main>

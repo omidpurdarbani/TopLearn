@@ -1,18 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using TopLearn.Core.DTOs.User;
+using TopLearn.Core.DTOs;
 using TopLearn.Core.Services.Interfaces;
 
 namespace TopLearn.Web.Areas.UserPanel.Controllers
 {
-
     [Area("UserPanel")]
     [Authorize]
-
     public class WalletController : Controller
     {
-
         private IUserService _userService;
 
         public WalletController(IUserService userService)
@@ -20,49 +16,38 @@ namespace TopLearn.Web.Areas.UserPanel.Controllers
             _userService = userService;
         }
 
-        [Route("/wallet")]
+
+
+        [Route("UserPanel/Wallet")]
         public IActionResult Index()
         {
-            string userEmail = User.FindFirstValue(ClaimTypes.Email);
-
-            var Wallets = _userService.GetUserWallet(userEmail);
-            Wallets.Reverse(0, Wallets.Count);
-            ViewBag.ListWallet = Wallets;
-            ViewBag.Balance = _userService.UserWalletBalance(userEmail);
-
+            ViewBag.ListWallet = _userService.GetWalletUser(User.Identity.Name);
             return View();
         }
 
-        [Route("/wallet")]
+        [Route("UserPanel/Wallet")]
         [HttpPost]
-        public IActionResult Index(WalletChargeViewModel charge)
+        public ActionResult Index(ChargeWalletViewModel charge)
         {
-
-            string userEmail = User.FindFirstValue(ClaimTypes.Email);
-
             if (!ModelState.IsValid)
             {
-
-                ViewBag.ListWallet = _userService.GetUserWallet(userEmail);
-                ViewBag.Balance = _userService.UserWalletBalance(userEmail);
-
+                ViewBag.ListWallet = _userService.GetWalletUser(User.Identity.Name);
                 return View(charge);
             }
 
-
-            int walletId = _userService.ChargeWallet(userEmail, charge.Amount, "شارژ حساب", false);
-            _userService.UpdateWalletFactorUrl(walletId, "https://localhost:44349/Factor/");
-
-            //int walletId = _userService.ChargeWallet(userEmail, charge.Amount, "شارژ حساب", false);
-            //_userService.UpdateWalletFactorUrl(walletId, "https://toplearn.somee.com/Factor/");
+            int walletId = _userService.ChargeWallet(User.Identity.Name, charge.Amount, "شارژ حساب");
 
             #region Online Payment
 
             var payment = new ZarinpalSandbox.Payment(charge.Amount);
-            var res = payment.PaymentRequest("شارژ حساب", "https://localhost:44349/Factor/" + walletId,
-                "omidprojecttest@gmail.com");
-            //var res = payment.PaymentRequest("شارژ حساب", "https://toplearn.somee.com/Factor/" + walletId,
-            //    "omidprojecttest@gmail.com");
+
+            // Get the current request context
+            var request = HttpContext.Request;
+
+            // Get the current domain
+            var domain = $"{request.Scheme}://{request.Host}";
+
+            var res = payment.PaymentRequest("شارژ کیف پول", $"{domain}/OnlinePayment/" + walletId, "Info@topLearn.Com", "09197070750");
 
             if (res.Result.Status == 100)
             {
@@ -72,10 +57,7 @@ namespace TopLearn.Web.Areas.UserPanel.Controllers
             #endregion
 
 
-            ViewBag.ListWallet = _userService.GetUserWallet(userEmail);
-            ViewBag.Balance = _userService.UserWalletBalance(userEmail);
-
-            return View(charge);
+            return null;
         }
     }
 }

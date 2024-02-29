@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
-namespace TopLearn.Core.DTOs.User
+namespace TopLearn.Core.DTOs
 {
-    public class WalletChargeViewModel
+    public class ChargeWalletViewModel
     {
         [Display(Name = "مبلغ")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
@@ -15,8 +17,7 @@ namespace TopLearn.Core.DTOs.User
         public int Amount { get; set; }
         public int Type { get; set; }
         public string Description { get; set; }
-        public bool IsPay { get; set; }
-        public string FactorUrl { get; set; }
         public DateTime DateTime { get; set; }
+
     }
 }

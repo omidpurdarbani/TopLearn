@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using TopLearn.Core.DTOs.User;
+using TopLearn.Core.DTOs;
 using TopLearn.Core.Services.Interfaces;
 
 namespace TopLearn.Web.Areas.UserPanel.Controllers
@@ -12,108 +15,68 @@ namespace TopLearn.Web.Areas.UserPanel.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-
-        #region Constructor injection
-
         private IUserService _userService;
 
         public HomeController(IUserService userService)
         {
             _userService = userService;
         }
-
-        #endregion
-
         public IActionResult Index()
         {
-            return View(_userService.GetUserInformation(User.FindFirstValue(ClaimTypes.Email)));
+            return View(_userService.GetUserInformation(User.Identity.Name));
         }
 
-        #region Edit Profile
-
-        [Route("/EditProfile")]
+        [Route("UserPanel/EditProfile")]
         public IActionResult EditProfile()
         {
-            return View(_userService.GetDataForEditUserProfile(User.FindFirstValue(ClaimTypes.Email)));
+            return View(_userService.GetDataForEditProfileUser(User.Identity.Name));
         }
 
+        [Route("UserPanel/EditProfile")]
         [HttpPost]
-        [Route("/EditProfile")]
-        public IActionResult EditProfile(EditProfileViewModel model)
+        public IActionResult EditProfile(EditProfileViewModel profile)
         {
             if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+                return View(profile);
 
-            if (model.OldAvatar == true && model.UserAvatar != null)
-            {
-                ModelState.AddModelError("UserAvatar", "شما نمی توانید از هر دو گزینه برای عکس پروفایل استفاده نمایید !");
-                return View(model);
-            }
+            _userService.EditProfile(User.Identity.Name,profile);
 
-            if (model.OldAvatar == false && model.UserAvatar == null)
-            {
-                ModelState.AddModelError("UserAvatar", "عکسی انتخاب نشده است ! ");
-                return View(model);
-            }
-
-
-            _userService.EditProfile(User.FindFirstValue(ClaimTypes.Email), model);
-
-            //LogOut
+            //Log Out User
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            ViewBag.Done = true;
-            return View(_userService.GetDataForEditUserProfile(User.FindFirstValue(ClaimTypes.Email)));
+            return Redirect("/Login?EditProfile=true");
+
         }
 
-        #endregion
-
-        #region Change Password
-
-        [Route("/ChangePassword")]
+        [Route("UserPanel/ChangePassword")]
         public IActionResult ChangePassword()
         {
             return View();
         }
 
+
+        [Route("UserPanel/ChangePassword")]
         [HttpPost]
-        [Route("/ChangePassword")]
-        public IActionResult ChangePassword(ChangePasswordViewModel model)
+        public IActionResult ChangePassword(ChangePasswordViewModel change)
         {
+            string currentUserName = User.Identity.Name;
+
             if (!ModelState.IsValid)
+                return View(change);
+
+            if (!_userService.CompareOldPassword(change.OldPassword, currentUserName))
             {
-                return View(model);
+                ModelState.AddModelError("OldPassword","کلمه عبور فعلی صحیح نمیباشد");
+                return View(change);
             }
 
-            string UserEmail = User.FindFirstValue(ClaimTypes.Email);
-
-            if (!_userService.CompareCurrentPassword(UserEmail, model.CurrentPassword))
-            {
-                ModelState.AddModelError("CurrentPassword", "کلمه عبور فعلی صحیح نمی باشد");
-                return View(model);
-            }
-
-            _userService.ChangeUserPassword(UserEmail, model.NewPassword);
-
-            ViewBag.Done = true;
-            ViewBag.UserName = _userService
-                .GetUserByEmail(UserEmail).UserName;
-
-            #region Logout
-
-            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            #endregion
+            _userService.ChangeUserPassword(currentUserName,change.Password);
+            ViewBag.IsSuccess = true;
 
             return View();
         }
 
-        #endregion
 
-
-
-
+     
     }
 }

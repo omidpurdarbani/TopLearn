@@ -1,12 +1,9 @@
-﻿@model TopLearn.DataLayer.Entities.User.User
+﻿@model (TopLearn.DataLayer.Entities.User.User,string)
 
 <div style="direction: rtl; padding: 20px">
-    
-    <h2>@Model.UserName عزیز !</h2>
-    <p>با تشکر از ثبت نام شما در تاپلرن , جهت ادامه کار می بایست حساب کاربری خود را فعال کنید .</p>
+    <h2>@Model.Item1.UserName عزیز !</h2>
+    <p>با تشکر از ثبت نام شما در تاپ لرن ، جهت ادامه کار میبایست حساب کاربری خود را فعال کنید</p>
     <p>
-        <a href="https://localhost:44349/Account/ActiveAccount/@Model.ActiveCode">فعال سازی حساب کاربری</a>
-        @*<a href="https://toplearn.editUser.com/Account/ActiveAccount/@Model.ActiveCode">فعال سازی حساب کاربری</a>*@
+        <a href="@Model.Item2/Account/ActiveAccount/@Model.Item1.ActiveCode">فعالسازی حساب کاربری</a>
     </p>
-
-</div>
+    </div>

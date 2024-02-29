@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+//using Microsoft.AspNetCore.Identity.UI.Pages.Account.Internal;
+using Microsoft.AspNetCore.Mvc;
 using TopLearn.Core.Convertors;
-using TopLearn.Core.DTOs.User;
+using TopLearn.Core.DTOs;
 using TopLearn.Core.Generator;
 using TopLearn.Core.Security;
 using TopLearn.Core.Senders;
@@ -14,194 +15,146 @@ using TopLearn.DataLayer.Entities.User;
 
 namespace TopLearn.Web.Controllers
 {
-
     public class AccountController : Controller
     {
-
-        #region Constructor injection
-
-        private static bool sended = false;
-        private static User _user = new User();
-
         private IUserService _userService;
-        private IViewRenderService _viewRenderService;
+        private IViewRenderService _viewRender;
 
-        public AccountController(IUserService userService, IViewRenderService viewRenderService)
+        public AccountController(IUserService userService, IViewRenderService viewRender)
         {
             _userService = userService;
-            _viewRenderService = viewRenderService;
+            _viewRender = viewRender;
         }
-
-        #endregion
 
         #region Register
 
-        [Route("/Register")]
+        [Route("Register")]
         public IActionResult Register()
         {
-            if (sended == true)
-            {
-                ViewBag.UserName = _user.UserName;
-                ViewBag.Email = _user.Email;
-                ViewBag.Resend = true;
-
-                sended = false;
-                _user = null;
-
-                return View();
-            }
-
             return View();
         }
 
-        [Route("/Register")]
         [HttpPost]
-        public IActionResult Register(RegisterViewModel model)
+        [Route("Register")]
+        public IActionResult Register(RegisterViewModel register)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View(register);
             }
 
-            if (_userService.IsExistEmail(model.Email.FixEmail()))
+
+            if (_userService.IsExistUserName(register.UserName))
+            {
+                ModelState.AddModelError("UserName", "نام کاربری معتبر نمی باشد");
+                return View(register);
+            }
+
+            if (_userService.IsExistEmail(FixedText.FixEmail(register.Email)))
             {
                 ModelState.AddModelError("Email", "ایمیل معتبر نمی باشد");
-                return View(model);
+                return View(register);
             }
 
-            User user = new User()
+
+            DataLayer.Entities.User.User user = new User()
             {
-                ActiveCode = TextGenerator.GenerateUniqCode(),
-                Email = model.Email.FixEmail(),
+                ActiveCode = NameGenerator.GenerateUniqCode(),
+                Email = FixedText.FixEmail(register.Email),
                 IsActive = false,
-                Password = PasswordHelper.EncodePasswordMd5(model.Password),
+                Password = PasswordHelper.EncodePasswordMd5(register.Password),
                 RegisterDate = DateTime.Now,
-                UserAvatar = "Default.jpg",
-                UserName = model.UserName,
-                UserRole = 3
+                UserAvatar = "Defult.jpg",
+                UserName = register.UserName
             };
+
+            #region Send Activation Email
+
+            // Get the current request context
+            var request = HttpContext.Request;
+
+            // Get the current domain
+            var domain = $"{request.Scheme}://{request.Host}";
+
+            string body = _viewRender.RenderToStringAsync("_ActiveEmail", (user, domain));
+            SendEmail.Send(user.Email, "فعالسازی", body);
+
+            #endregion
 
             _userService.AddUser(user);
 
-            //Send Email
-            SendActiveEmail(user.Email);
-
-            ViewBag.UserName = _user.UserName;
-            ViewBag.Email = _user.Email;
-            ViewBag.Done = true;
-
-            sended = false;
-            _user = null;
-
-            return View(model);
-
+            return View("SuccessRegister", user);
         }
 
-        [Route("/SendActiveEmail/{email}")]
-        public IActionResult SendActiveEmail(string email)
-        {
-
-            if (email == null)
-            {
-                return View("Register");
-            }
-
-            var user = _userService.GetUserByEmail(email);
-
-            if (user == null)
-            {
-                return Redirect("/Register");
-            }
-
-            _userService.UpdateUser(user);
-
-            //send email
-            string body = _viewRenderService.RenderToStringAsync("_ActiveEmail", user);
-            SendEmail.Send(user.Email, "فعال سازی حساب", body);
-
-            _user = user;
-            sended = true;
-            return RedirectToAction("Register");
-        }
 
         #endregion
 
         #region Login
-
-        [Route("/Login")]
-        public IActionResult Login()
+        [Route("Login")]
+        public ActionResult Login(bool EditProfile = false)
         {
-            LoginViewModel model = new LoginViewModel();
-
-            string returnUrl = HttpContext.Request.Query["ReturnUrl"];
-            if (returnUrl != null)
-            {
-                model.ReturnPath = returnUrl;
-            }
-
-            return View(model);
+            ViewBag.EditProfile = EditProfile;
+            return View();
         }
 
-        [Route("/Login")]
         [HttpPost]
-        public IActionResult Login(LoginViewModel model)
+        [Route("Login")]
+        public ActionResult Login(LoginViewModel login, string ReturnUrl = "/")
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View(login);
             }
 
-            var user = _userService.LoginUser(model.Email, model.Password);
-
+            var user = _userService.LoginUser(login);
             if (user != null)
             {
-                if (user.IsActive == false)
+                if (user.IsActive)
                 {
-                    ViewBag.UserName = user.UserName;
-                    ViewBag.Email = user.Email;
-                    ViewBag.notactive = true;
+                    var claims = new List<Claim>()
+                    {
+                        new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString()),
+                        new Claim(ClaimTypes.Name,user.UserName)
+                    };
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
+
+                    var properties = new AuthenticationProperties
+                    {
+                        IsPersistent = login.RememberMe
+                    };
+                    HttpContext.SignInAsync(principal, properties);
+
+                    ViewBag.IsSuccess = true;
+                    if (ReturnUrl != "/")
+                    {
+                        return Redirect(ReturnUrl);
+                    }
                     return View();
                 }
-                //Login User
-                var claims = new List<Claim>()
+                else
                 {
-                    new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email, user.Email)
-                };
-
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                var principal = new ClaimsPrincipal(identity);
-
-                var properties = new AuthenticationProperties()
-                {
-                    IsPersistent = model.RememberMe
-                };
-
-                HttpContext.SignInAsync(principal, properties);
-
-                if (model.ReturnPath != null)
-                {
-                    return Redirect(model.ReturnPath);
+                    ModelState.AddModelError("Email", "حساب کاربری شما فعال نمی باشد");
                 }
-
-                ViewBag.UserName = user.UserName;
-                ViewBag.Done = true;
-                return View(model);
-
             }
+            ModelState.AddModelError("Email", "کاربری با مشخصات وارد شده یافت نشد");
+            return View(login);
+        }
 
-            ModelState.AddModelError("Email", "اطلاعات وارد شده معتبر نمی باشند !");
+        #endregion
 
-            return View(model);
+        #region Active Account
+
+        public IActionResult ActiveAccount(string id)
+        {
+            ViewBag.IsActive = _userService.ActiveAccount(id);
+            return View();
         }
 
         #endregion
 
         #region Logout
-
-        [Route("/Logout")]
+        [Route("Logout")]
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -210,109 +163,73 @@ namespace TopLearn.Web.Controllers
 
         #endregion
 
-        #region Active account
 
-        public IActionResult ActiveAccount(string id)
-        {
-            User user = _userService.ActiveAccount(id);
-
-            if (user != null)
-            {
-
-                return View("ActiveAccount", user.UserName);
-
-            }
-
-            return NotFound();
-
-        }
-
-        #endregion
-
-        #region Forgot password
-
-        [Route("/ForgotPassword")]
-        public IActionResult ForgotPassword()
+        #region Forgot Password
+        [Route("ForgotPassword")]
+        public ActionResult ForgotPassword()
         {
             return View();
         }
 
-        [Route("/ForgotPassword")]
         [HttpPost]
-        public IActionResult ForgotPassword(ForgotPasswordViewModel model)
+        [Route("ForgotPassword")]
+        public ActionResult ForgotPassword(ForgotPasswordViewModel forgot)
         {
             if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+                return View(forgot);
 
-            User user = _userService.GetUserByEmail(model.Email.FixEmail());
+            string fixedEmail = FixedText.FixEmail(forgot.Email);
+            var user = _userService.GetUserByEmail(fixedEmail);
 
             if (user == null)
             {
-                ModelState.AddModelError("Email", "ایمیل معتبر نمی باشد!");
-                return View(model);
+                ModelState.AddModelError("Email", "کاربری یافت نشد");
+                return View(forgot);
             }
 
-            #region Send Recovery Email
+            // Get the current request context
+            var request = HttpContext.Request;
 
-            string body = _viewRenderService.RenderToStringAsync("_ForgotPassword", user);
-            SendEmail.Send(user.Email, "بازیابی کلمه عبور", body);
+            // Get the current domain
+            var domain = $"{request.Scheme}://{request.Host}";
 
-            #endregion
+            string bodyEmail = _viewRender.RenderToStringAsync("_ForgotPassword", (user, domain));
+            SendEmail.Send(user.Email, "بازیابی حساب کاربری", bodyEmail);
+            ViewBag.IsSuccess = true;
 
-            ViewBag.UserName = user.UserName;
-            ViewBag.Email = user.Email;
-            ViewBag.Done = true;
-            return View(model);
+            return View();
         }
         #endregion
 
-        #region Reset password
+        #region Reset Password
 
-        public IActionResult ResetPassword(string id)
+        public ActionResult ResetPassword(string id)
         {
-            User user = _userService.GetUserByActiveCode(id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
             return View(new ResetPasswordViewModel()
             {
                 ActiveCode = id
             });
         }
 
+
         [HttpPost]
-        public IActionResult ResetPassword(ResetPasswordViewModel model)
+        public ActionResult ResetPassword(ResetPasswordViewModel reset)
         {
             if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+                return View(reset);
 
-            User user = _userService.GetUserByActiveCode(model.ActiveCode);
+            var user = _userService.GetUserByActiveCode(reset.ActiveCode);
 
             if (user == null)
-            {
                 return NotFound();
-            }
 
-            string hashNewPassword = PasswordHelper.EncodePasswordMd5(model.Password);
+            string hashNewPassword = PasswordHelper.EncodePasswordMd5(reset.Password);
             user.Password = hashNewPassword;
             _userService.UpdateUser(user);
 
-            #region Logout
+            return Redirect("/Login");
 
-            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            #endregion
-
-            ViewBag.Done = true;
-            return View(model);
         }
         #endregion
-
     }
 }

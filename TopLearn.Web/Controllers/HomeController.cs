@@ -1,75 +1,105 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using TopLearn.Core.Services.Interfaces;
-using TopLearn.DataLayer.Entities.Wallet;
 
 namespace TopLearn.Web.Controllers
 {
     public class HomeController : Controller
     {
         private IUserService _userService;
+        private ICourseService _courseService;
 
-        public HomeController(IUserService userService)
+        public HomeController(IUserService userService, ICourseService courseService)
         {
             _userService = userService;
+            _courseService = courseService;
         }
 
         public IActionResult Index()
         {
-            return View();
+          
+            var popular = _courseService.GetPopularCourse();
+            ViewBag.PopularCourse = popular;
+            return View(_courseService.GetCourse().Item1);
         }
 
-        [Authorize]
-        [Route("Factor/{id}")]
-        public IActionResult Factor(int id)
+     
+
+        [Route("OnlinePayment/{id}")]
+        public IActionResult onlinePayment(int id)
         {
-            Wallet _wallet = new Wallet();
-            if (id == 0 || id == null)
-            {
-                return NotFound();
-            }
-
-            _wallet = _userService.GetWalletByWalletId(id);
-            if (_wallet == null)
-            {
-                return NotFound();
-            }
-
-            int userId = _userService.GetUserIdByEmail(User.FindFirstValue(ClaimTypes.Email));
-            if (_wallet.UserId != userId)
-            {
-                return NotFound();
-            }
-
             if (HttpContext.Request.Query["Status"] != "" &&
-                HttpContext.Request.Query["Status"]
-                    .ToString()
-                    .ToLower().Contains("ok") &&
-                HttpContext.Request.Query["Authorith"] != "")
+                HttpContext.Request.Query["Status"].ToString().ToLower() == "ok"
+                && HttpContext.Request.Query["Authority"] != "")
             {
                 string authority = HttpContext.Request.Query["Authority"];
 
-                var payment = new ZarinpalSandbox.Payment(_wallet.Amount);
+                var wallet = _userService.GetWalletByWalletId(id);
 
+                var payment = new ZarinpalSandbox.Payment(wallet.Amount);
                 var res = payment.Verification(authority).Result;
-
-                if (res.Status == 100 || res.Status == 101)
+                if (res.Status == 100)
                 {
-                    _userService.UpdateWalletFactorUrl(id, HttpContext.Request.GetDisplayUrl());
-                    _wallet.IsPay = true;
-                    _userService.UpdateWallet(_wallet);
                     ViewBag.code = res.RefId;
                     ViewBag.IsSuccess = true;
+                    wallet.IsPay = true;
+                    _userService.UpdateWallet(wallet);
                 }
+
             }
 
-            ViewBag.Balance = _userService.UserWalletBalance(User.FindFirstValue(ClaimTypes.Email));
-            ViewBag.id = id;
-            ViewBag.date = _wallet.CreateDate.ToShortDateString();
-            ViewBag.time = _wallet.CreateDate.ToShortTimeString();
-            ViewBag.UserName = User.Identity.Name;
+            return View();
+        }
+
+        public IActionResult GetSubGroups(int id)
+        {
+            List<SelectListItem> list=new List<SelectListItem>()
+            {
+                new SelectListItem(){Text = "انتخاب کنید",Value = ""}
+            };
+            list.AddRange(_courseService.GetSubGroupForManageCourse(id));
+            return Json(new SelectList(list, "Value", "Text"));
+        }
+
+
+        [HttpPost]
+        [Route("file-upload")]
+        public IActionResult UploadImage(IFormFile upload, string CKEditorFuncNum, string CKEditor, string langCode)
+        {
+            if (upload.Length <= 0) return null;
+
+            var fileName = Guid.NewGuid() + Path.GetExtension(upload.FileName).ToLower();
+
+
+
+            var path = Path.Combine(
+                Directory.GetCurrentDirectory(), "wwwroot/MyImages",
+                fileName);
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                upload.CopyTo(stream);
+
+            }
+
+
+
+            var url = $"{"/MyImages/"}{fileName}";
+
+
+            return Json(new { uploaded = true, url });
+        }
+
+        public IActionResult Error404()
+        {
             return View();
         }
     }

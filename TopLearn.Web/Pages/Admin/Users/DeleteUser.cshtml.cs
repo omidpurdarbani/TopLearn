@@ -1,52 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TopLearn.Core.DTOs.User;
+using TopLearn.Core.DTOs;
+using TopLearn.Core.Security;
 using TopLearn.Core.Services.Interfaces;
 
 namespace TopLearn.Web.Pages.Admin.Users
 {
+    [PermissionChecker(2)]
     public class DeleteUserModel : PageModel
     {
         private IUserService _userService;
-        private IPermissionService _permissionService;
 
-        public DeleteUserModel(IUserService userService, IPermissionService permissionService)
+        public DeleteUserModel(IUserService userService)
         {
             _userService = userService;
-            _permissionService = permissionService;
         }
 
-        private static int _userId;
-
-        public DeleteUserViewModel DeleteUserViewModel { get; set; }
-
-        public IActionResult OnGet(int userId = 0)
+        public InformationUserViewModel InformationUserViewModel { get; set; }
+        public void OnGet(int id)
         {
-            if (userId == 0)
-            {
-                return Redirect("/admin/users/");
-            }
-
-            if (_userService.IsUserExistByUserId(userId))
-            {
-                DeleteUserViewModel = _userService.GetUserInfoForDeleteUser(userId);
-            }
-            else
-            {
-                return Redirect("/admin/users/");
-            }
-
-            _userId = userId;
-
-            DeleteUserViewModel.Roles = _permissionService.GetRoles();
-            return Page();
+            ViewData["UserId"] = id;
+            InformationUserViewModel = _userService.GetUserInformation(id);
         }
 
-        public IActionResult OnPost()
+        public IActionResult OnPost(int UserId)
         {
-            _userService.DeleteUserFromAdmin(_userId);
-
-            return Redirect("/Admin/Users");
+            _userService.DeleteUser(UserId);
+            return RedirectToPage("Index");
         }
     }
 }

@@ -1,81 +1,50 @@
 ﻿@page
 @using TopLearn.Core.Convertors
 @model TopLearn.Web.Pages.Admin.Users.IndexModel
-
+@{
+    ViewData["Title"] = "Index";
+}
 
 <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header">لیست کاربران</h1>
     </div>
+    <!-- /.col-lg-12 -->
 </div>
 
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                @if (!string.IsNullOrWhiteSpace(HttpContext.Request.Query["filterUsername"]) && !string.IsNullOrWhiteSpace(HttpContext.Request.Query["filterEmail"]))
-                {
-                    <p style="font-size: 20px; font-weight:bold "> نمایش نتایج برای : </p>
-                    <p style="font-size: 18px; font-weight:bold "> نام کاربری : @HttpContext.Request.Query["filterUsername"]</p>
-                    <p style="font-size: 18px; font-weight:bold ">ایمیل: @HttpContext.Request.Query["filterEmail"]</p>
-                    <p style="font-size: 18px; font-weight:bold ">تعداد : @Model.UsersForAdminViewModel.Users.Count</p>
-                }
-                else if (!string.IsNullOrWhiteSpace(HttpContext.Request.Query["filterUsername"]))
-                {
-                    <p style="font-size: 20px">نمایش نتایج برای  :</p>
-                    <p style="font-size: 18px; font-weight:bold "> نام کاربری : @HttpContext.Request.Query["filterUsername"]</p>
-                    <p style="font-size: 18px; font-weight:bold ">تعداد : @Model.UsersForAdminViewModel.Users.Count</p>
-                }
-                else if (!string.IsNullOrWhiteSpace(HttpContext.Request.Query["filterEmail"]))
-                {
-                    <p style="font-size: 20px">نمایش نتایج برای : </p>
-                    <p style="font-size: 18px; font-weight:bold "> ایمیل : @HttpContext.Request.Query["filterEmail"]</p>
-                    <p style="font-size: 18px; font-weight:bold ">تعداد : @Model.UsersForAdminViewModel.Users.Count</p>
-                }
-                else
-                {
-                    <p style="font-size: 20px; font-weight:bold ">نمایش نتایج</p>
-                    <p style="font-size: 18px; font-weight:bold ">تعداد : @Model.UsersForAdminViewModel.Users.Count</p>
-                }
+                لیست کاربران سایت
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
                 <div class="table-responsive">
                     <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline" role="grid">
-                        <div class="row" style="margin: 5px 0 0 0;">
+                        <div class="row">
                             <form>
-                                <div class="col-sm-4 col-md-4">
-                                    <label style="width: 28%; font-size: 20px;margin: 2px 0 0 0; float: right;">نام کاربری :</label>
-                                    <input style="width: 70%; font-size: 17px;float: right;" type="text" name="filterUsername" value="@(ViewData["name"])" class="form-control" />
+                                <div class="col-sm-5 col-md-5">
+                                    <input type="text" name="filterUserName" class="form-control" placeholder="نام کاربری"/>
                                 </div>
                                 <div class="col-sm-5 col-md-5">
-                                    <label style="width: 15%; font-size: 20px; margin: 2px 0 0 0;float: right;">ایمیل :</label>
-                                    <input style="width: 70%; font-size: 17px;float: right;" type="text" name="filterEmail" value="@(ViewData["email"])" class="form-control" />
-
+                                    <input type="text" name="filterEmail" class="form-control" placeholder="ایمیل"/>
                                 </div>
-                                <div class="col-sm-3 col-md-3">
-                                    <button style="width: 40%;float: right;margin: -2px 0 0 10px; font-size: 18px" type="submit" class="btn btn-github btn-info">
-                                        جستجو
-                                    </button>
-                                    <a asp-page="Index" style="width: 40%;float: right;margin: -2px 0 0 10px; font-size: 18px" class="btn btn-default">
-                                        ریست
-                                    </a>
+                                <div class="col-sm-2 col-md-2">
+                                    <button type="submit" class="btn btn-info" >بگرد</button>
+                                    <a class="btn btn-default btn-sm" href="/Admin/Users">خالی</a>
                                 </div>
                             </form>
                         </div>
-                        <hr/>
-                        <div class="col-md-12" style="margin: 10px 0 15px 0">
-                            <a asp-page="CreateUser" style="font-size: 2rem" class="btn btn-info">
-                                افزودن کاربر جدید
-                            </a>
-                            <a asp-page="DeletedUsers" style="font-size: 2rem;margin-right: 0.5vw" class="btn btn-danger">
-                                نمایش کاربران حذف شده
-                            </a>
+                        <div class="col-md-12" style="margin: 10px 0;">
+                          
+                                <a asp-page="CreateUser" class="btn btn-outline btn-success">افزودن کاربر جدید</a>
+                           
                         </div>
-                        <table class="table table-striped table-bordered table-hover dataTable no-footer" id="dataTables-example" aria-describedby="dataTables-example_info" style="font-size: 18px">
+                        <table class="table table-striped table-bordered table-hover dataTable no-footer" id="dataTables-example" aria-describedby="dataTables-example_info">
                             <thead>
                                 <tr>
-                                    <th>نام و نام خانوادگی</th>
+                                    <th>نام کاربری</th>
                                     <th>ایمیل</th>
                                     <th>وضعیت</th>
                                     <th>تاریخ ثبت نام</th>
@@ -83,7 +52,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var user in Model.UsersForAdminViewModel.Users)
+                                @foreach (var user in Model.UserForAdminViewModel.Users)
                                 {
                                     <tr>
                                         <td>@user.UserName</td>
@@ -91,22 +60,21 @@
                                         <td>
                                             @if (user.IsActive)
                                             {
-                                                <p style="color: green; font-size: 18px;">فعال</p>
+                                                <p class="text-success">فعال</p>
                                             }
                                             else
                                             {
-                                                <p style="color: red; font-size: 18px;">غیر فعال</p>
+                                                <p class="text-danger">غیر فعال</p>
                                             }
                                         </td>
                                         <td>@user.RegisterDate.ToShamsi()</td>
-                                        <td >
-                                            <a asp-page="EditUser" asp-route-userId="@user.UserId" style="font-size:18px" class="btn btn-warning btn-sm">
+                                        <td>
+                                            <a href="/Admin/Users/EditUser/@user.UserId" class="btn btn-warning btn-sm">
                                                 ویرایش
                                             </a>
-                                            <a asp-page="DeleteUser" asp-route-userId="@user.UserId" style="font-size:18px" class="btn btn-danger btn-sm">
+                                            <a href="/Admin/Users/DeleteUser/@user.UserId" class="btn btn-danger btn-sm">
                                                 حذف
                                             </a>
-
                                         </td>
                                     </tr>
                                 }
@@ -115,17 +83,20 @@
                             <div class="col-sm-6">
                                 <div class="dataTables_paginate paging_simple_numbers" id="dataTables-example_paginate">
                                     <ul class="pagination">
-                                        @for (int i = 1; i <= Model.UsersForAdminViewModel.PageCount; i++)
-                                        {
-                                            <li class="paginate_button" @((i==Model.UsersForAdminViewModel.CurrentPage)?"active":"") aria-controls="dataTables-example" tabindex="0">
-                                                <a href="/admin/users?pageId=@i">@i</a>
-                                            </li>
-                                        }
+                                 
+                                       @for (int i = 1; i <= Model.UserForAdminViewModel.PageCount; i++)
+                                       {
+                                           <li class="paginate_button @((i==Model.UserForAdminViewModel.CurrentPage)?"active":"")" aria-controls="dataTables-example" tabindex="0">
+                                               <a href="/Admin/Users?PageId=@i">@i</a>
+                                           </li>
+                                       }
+
                                     </ul>
                                 </div></div>
                         </div>
                     </div>
                 </div>
+
             </div>
             <!-- /.panel-body -->
         </div>

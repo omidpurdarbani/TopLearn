@@ -1,19 +1,12 @@
-﻿{
+{
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:10340",
+      "applicationUrl": "http://localhost:10341",
       "sslPort": 44349
     }
   },
-  //"iisSettings": {
-  //  "windowsAuthentication": false,
-  //  "anonymousAuthentication": true,
-  //  "iisExpress": {
-  //    "applicationUrl": "https://toplearn.somee.com/",
-  //    "sslPort": 44349
-  //  },
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
@@ -25,18 +18,10 @@
     "TopLearn.Web": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
     }
-    //"TopLearn.Web": {
-    //  "commandName": "Project",
-    //  "launchBrowser": true,
-    //  "applicationUrl": "https://toplearn.somee.com/;https://toplearn.somee.com/",
-    //  "environmentVariables": {
-    //    "ASPNETCORE_ENVIRONMENT": "Development"
-    //  }
-    //}
   }
 }

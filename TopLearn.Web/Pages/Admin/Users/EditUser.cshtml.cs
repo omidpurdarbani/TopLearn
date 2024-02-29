@@ -1,11 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TopLearn.Core.Convertors;
-using TopLearn.Core.DTOs.User;
+using TopLearn.Core.DTOs;
+using TopLearn.Core.Security;
 using TopLearn.Core.Services.Interfaces;
 
 namespace TopLearn.Web.Pages.Admin.Users
 {
+    [PermissionChecker(3)]
     public class EditUserModel : PageModel
     {
         private IUserService _userService;
@@ -17,87 +22,29 @@ namespace TopLearn.Web.Pages.Admin.Users
             _permissionService = permissionService;
         }
 
-        private static int _userId;
+        
 
+        
         [BindProperty]
         public EditUserViewModel EditUserViewModel { get; set; }
-
-        public IActionResult OnGet(int userId = 0)
+        public void OnGet(int id)
         {
-            if (userId == 0)
-            {
-                return Redirect("/admin/users/");
-            }
-            if (_userService.IsUserExistByUserId(userId))
-            {
-                EditUserViewModel = _userService.GetUserInfoForEditUser(userId);
-            }
-            else
-            {
-                return Redirect("/admin/users/");
-            }
-
-            _userId = userId;
-
-            EditUserViewModel.Roles = _permissionService.GetRoles();
-            return Page();
+            EditUserViewModel = _userService.GetUserForShowInEditMode(id);
+            ViewData["Roles"] = _permissionService.GetRoles();
         }
 
-        public IActionResult OnPost(int selectedRole)
+        public IActionResult OnPost(List<int> SelectedRoles)
         {
             if (!ModelState.IsValid)
             {
-
-                EditUserViewModel.Roles = _permissionService.GetRoles();
-                EditUserViewModel.SelectedRole = selectedRole;
-                EditUserViewModel.CurrentAvatar = (_userService.GetUserInfoForEditUser(_userId)).CurrentAvatar;
-
-                return Page();
-
-            }
-
-            if (EditUserViewModel.OldAvatar && EditUserViewModel.UserAvatar != null)
-            {
-
-                ModelState.AddModelError("EditUserViewModel.UserAvatar", "شما نمی توانید از هر دو گزینه برای عکس پروفایل استفاده نمایید !");
-
-                EditUserViewModel.Roles = _permissionService.GetRoles();
-                EditUserViewModel.SelectedRole = selectedRole;
-                EditUserViewModel.CurrentAvatar = (_userService.GetUserInfoForEditUser(_userId)).CurrentAvatar;
-
-                return Page();
-
-            }
-
-            if (EditUserViewModel.OldAvatar == false && EditUserViewModel.UserAvatar == null)
-            {
-
-                ModelState.AddModelError("EditUserViewModel.UserAvatar", " عکسی انتخاب نشده است ");
-
-                EditUserViewModel.Roles = _permissionService.GetRoles();
-                EditUserViewModel.SelectedRole = selectedRole;
-                EditUserViewModel.CurrentAvatar = (_userService.GetUserInfoForEditUser(_userId)).CurrentAvatar;
-
-                return Page();
-
-            }
-
-            if (_userService.IsExistEmail(EditUserViewModel.Email.FixEmail()))
-            {
-                ModelState.AddModelError("EditUserViewModel.Email", " ایمیل قبلا ثبت شده می باشد ! ");
-
-                EditUserViewModel.Roles = _permissionService.GetRoles();
-                EditUserViewModel.SelectedRole = selectedRole;
-                EditUserViewModel.CurrentAvatar = (_userService.GetUserInfoForEditUser(_userId)).CurrentAvatar;
-
                 return Page();
             }
 
-            EditUserViewModel.SelectedRole = selectedRole;
+            _userService.EditUserFromAdmin(EditUserViewModel);
 
-            _userService.EditUserFromAdmin(EditUserViewModel, _userId);
-
-            return Redirect("/Admin/Users");
+            //Edit Roles
+            _permissionService.EditRolesUser(EditUserViewModel.UserId,SelectedRoles);
+            return RedirectToPage("Index");
         }
     }
 }

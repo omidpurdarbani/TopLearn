@@ -1,163 +1,100 @@
-﻿@page "{userId}"
+﻿@page "{id}"
+@using TopLearn.DataLayer.Entities.User
 @model TopLearn.Web.Pages.Admin.Users.EditUserModel
 @{
-    ViewData["Title"] = "ویرایش کاربر";
+    ViewData["Title"] = "افزودن کاربر";
+    List<Role> Roles = ViewData["Roles"] as List<Role>;
 }
 
 <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header">ویرایش کاربر</h1>
     </div>
+    <!-- /.col-lg-12 -->
 </div>
 
 <div class="row">
     <form method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="EditUserViewModel.UserId"/>
+        <input type="hidden" asp-for="EditUserViewModel.AvatarName"/>
         <div class="col-md-8">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     اطلاعات کاربر
                 </div>
+                <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="form-group">
-                        <label>نام کاربری : </label>
-                        <input type="text" required asp-for="EditUserViewModel.UserName" class="form-control" value="@Model.EditUserViewModel.UserName">
+                        <label>نام کاربری</label>
+                        <label class="text-success">@Model.EditUserViewModel.UserName</label>
                     </div>
                     <div class="form-group">
-                        <label>ایمیل : </label>
-                        <input type="email" required asp-for="EditUserViewModel.Email" class="form-control" value="@Model.EditUserViewModel.Email">
-                        <span asp-validation-for="EditUserViewModel.Email" style="font-size: 1.5rem" class="alert-danger"></span>
+                        <label>ایمیل</label>
+                        <input type="email" asp-for="EditUserViewModel.Email" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>کلمه عبور : </label>
+                        <label>کلمه عبور</label>
                         <input type="text" asp-for="EditUserViewModel.Password" class="form-control">
-                        <span style="font-size: 1.5rem" class="alert-warning">کلمه عبور را به منظور تغییر کلمه عبور وارد کنید . در صورت وارد نکردن کلمه عبور , تغییری صورت نمی گیرد .  </span>
+                        <p class="help-block">در صورت وارد کردن کلمه عبور ، کلمه عبور کاربر تغییر خواهد کرد</p>
                     </div>
                     <div class="form-group">
-                        <label>فعال : </label>
-                        @if (Model.EditUserViewModel.IsActive)
+                        <label>انتخاب نقش کاربر</label>
+                        @foreach (var item in Roles)
                         {
-                            <input type="checkbox" checked asp-for="EditUserViewModel.IsActive" class="">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="SelectedRoles" value="@item.RoleId" @((Model.EditUserViewModel.UserRoles.Any(r => r == item.RoleId) ? "checked" : ""))>@item.RoleTitle
+                                </label>
+                            </div>
                         }
-                        else
-                        {
-                            <input type="checkbox" asp-for="EditUserViewModel.IsActive" class="">
-                        }
+
                     </div>
-                    <div class="form-group">
-                        <label>نقش های کاربر</label>
-                        @foreach (var role in Model.EditUserViewModel.Roles)
-                        {
-                            @if (Model.EditUserViewModel.SelectedRole == role.RoleId)
-                            {
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" checked required name="SelectedRole" value="@role.RoleId"> @role.RoleTitle
-                                        </label>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" required name="SelectedRole" value="@role.RoleId"> @role.RoleTitle
-                                    </label>
-                                </div>
-                            }
-                        }
-                    </div>
+                    <input type="submit" value="ویرایش اطلاعات" class="btn btn-success"/>
                 </div>
+                <!-- /.panel-body -->
             </div>
         </div>
         <div class="col-md-4">
             <div class="panel panel-default">
-                <div class="panel-heading" style="font-size: 2rem">
+                <div class="panel-heading">
                     تصویر پروفایل
                 </div>
+                <!-- /.panel-heading -->
                 <div class="panel-body">
-                    <label id="color" style="font-size: 18px; width: fit-content">
-                        <input asp-for="EditUserViewModel.OldAvatar" checked id="CheckBox" style="font-size: 18px;" type="checkbox"> ادامه با عکس پروفایل قبلی
-                    </label>
-                    <p></p>
-                    <p></p>
-                    <img id="img" class="thumbnail" style="width: 250px; max-width: 250px" src="/UserAvatar/@(Model.EditUserViewModel.CurrentAvatar)" />
-                    <br />
-                    <img id="uploadPreview" class="thumbnail" style="width: 250px; max-width: 250px" src="" />
-                    <br />
-                    <input asp-for="EditUserViewModel.UserAvatar" id="File" type="file" onchange="PreviewImage()" class="form-control">
-                    <br />
-                    <span asp-validation-for="EditUserViewModel.UserAvatar" style="font-size: 1.5rem" class="alert-danger"></span>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading" style="font-size: 2rem">
-                    ویرایش اطلاعات
-                </div>
-                <div class="panel-body">
-                    <div class="row col-md-12">
-                        <p style="text-align: center">
-                            <input style="font-size: 2rem; width: 60%;" type="submit" value="ویرایش" class="btn btn-success" />
-                        </p>
+                    <img id="imgAvatar" class="thumbnail" src="/UserAvatar/@Model.EditUserViewModel.AvatarName"/>
+                    <div class="form-group">
+                        <label>انتخاب تصویر</label>
+                        <input type="file" asp-for="EditUserViewModel.UserAvatar">
                     </div>
                 </div>
+                <!-- /.panel-body -->
             </div>
+
         </div>
+
     </form>
 </div>
-<script>
-    var checkbox = document.getElementById("CheckBox");
-    var color = document.getElementById("color");
-    var file = document.getElementById("File");
-    var img = document.getElementById("img");
-    var uploadPreview = document.getElementById("uploadPreview");
 
-    if (checkbox.checked == true) {
-        file.disabled = true;
-        file.value = "";
-        color.style.color = 'black';
-        uploadPreview.style.display = "none";
-        uploadPreview.src = "";
-        img.style.display = "block";
-    }
+@section Scripts
+    {
+    <script>
+        function readURL(input) {
 
-    if (checkbox.checked == false) {
-        file.disabled = false;
-        color.style.color = 'gray';
-        uploadPreview.style.display = "block";
-        img.style.display = "none";
-    }
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
 
+                reader.onload = function(e) {
+                    $('#imgAvatar').attr('src', e.target.result);
+                }
 
-    checkbox.addEventListener("click", () => {
-        file = document.getElementById("File");
-
-        if (checkbox.checked == true) {
-            img.style.display = "block";
-            color.style.color = 'black';
-            file.disabled = true;
-            uploadPreview.src = "";
-            file.value = "";
-            uploadPreview.style.display = "none";
+                reader.readAsDataURL(input.files[0]);
+            }
         }
-        if (checkbox.checked == false) {
-            img.style.display = "none";
-            color.style.color = 'gray';
-            uploadPreview.style.display = "block";
-            file.disabled = false;
-        }
-    });
+
+        $("#EditUserViewModel_UserAvatar").change(function() {
+            readURL(this);
+        });
+    </script>
+}
 
 
-</script>
-
-<script type="text/javascript">
-
-    function PreviewImage() {
-        var oFReader = new FileReader();
-        oFReader.readAsDataURL(document.getElementById("File").files[0]);
-
-        oFReader.onload = function (oFREvent) {
-            document.getElementById("uploadPreview").src = oFREvent.target.result;
-        };
-    };
-
-</script>

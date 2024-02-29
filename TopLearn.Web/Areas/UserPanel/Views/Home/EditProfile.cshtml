@@ -1,19 +1,16 @@
-﻿@model TopLearn.Core.DTOs.User.EditProfileViewModel
+﻿@model TopLearn.Core.DTOs.EditProfileViewModel
 @{
     ViewData["Title"] = "ویرایش حساب کاربری";
 }
-
 
 <div class="container">
     <nav aria-label="breadcrumb">
         <ul class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">تاپ لرن</a></li>
-            <li class="breadcrumb-item"><a href="/UserPanel">پنل کاربری</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a asp-action="EditProfile"> ویرایش حساب کاربری </a></li>
+            <li class="breadcrumb-item active" aria-current="page"> ویرایش پروفایل </li>
         </ul>
     </nav>
 </div>
-
 
 <main>
     <div class="container">
@@ -22,85 +19,44 @@
                 <partial name="_SideBar" />
                 <div class="col-md-9 col-sm-8 col-xs-12">
                     <section class="user-account-content">
-                        <header><h1 style="font-size: 25px"> ویرایش حساب کاربری </h1></header>
-                        
-                        <noscript>
-                            <div class="alert alert-danger">
-                                Your browser does not support JavaScript!
-                            </div>
-                        </noscript>
-
-
+                        <header><h1> ویرایش حساب کاربری </h1></header>
                         <div class="inner form-layer">
-                            @if (ViewBag.Done == true)
-                            {
-                                <div class="alert alert-success">
-                                    <h2 style="font-size: 25px">@Model.UserName عزیز</h2>
-                                    <br />
-                                    <div class="text-center">
-                                        <p style="font-size: 25px;">حساب کاربری شما با موفقیت ویرایش شد !</p>
-                                        <p style="font-size: 20px;">برای اعمال تغییرات , لطفا دوباره وارد حساب خود شوید .</p>
-                                    </div>
-                                    <div class="link">
-                                        <a href="/login" style="font-size: 18px"> <i class="zmdi zmdi-account"></i> ورود </a>
-                                    </div>
+                            <form asp-action="EditProfile" method="post" enctype="multipart/form-data">
+                              @if (ViewBag.IsSuccess != null)
+                              {
+                                  <div class="alert alert-success">
+                                      اطلاعات کاربری شما با موفقیت ویرایش شد
+                                  </div>
+                              }
 
+                                <input type="hidden" asp-for="AvatarName"/>
+                                <div class="row">
+                                    <div class="col-md-7 col-sm-8 col-xs-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon" id="username"><i class="zmdi zmdi-account"></i></span>
+                                            <input type="text" class="form-control" asp-for="UserName" placeholder="نام کاربری" aria-describedby="username">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7 col-sm-8 col-xs-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon" id="email-address"><i class="zmdi zmdi-email"></i></span>
+                                            <input type="text" class="form-control" asp-for="Email" placeholder="ایمیل" aria-describedby="email-address">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7 col-sm-8 col-xs-12">
+                                        <p class="help-block">
+                                            آواتار
+                                        </p>
+                                        <input type="file" asp-for="UserAvatar"/>
+                                        <p>لطفا فقط تصویر انتخاب کنید</p>
+                                        <img class="thumbnail" src="/UserAvatar/@Model.AvatarName" style="max-width: 150px"/>
+                                    </div>
+                                    <div class="col-md-7 col-sm-8 col-xs-12">
+                                        <button class="btn btn-success"> ویرایش اطلاعات </button>
+                                    </div>
                                 </div>
-                            }
-                            else
-                            {
-                                <form asp-action="EditProfile" method="post" enctype="multipart/form-data">
-                                    <input type="hidden" asp-for="AvatarName" />
-                                    <div class="row">
-                                        <div class="col-md-7 col-sm-8 col-xs-12">
-                                            <div class="input-group">
-                                                <span class="input-group-addon" id="username"><i class="zmdi zmdi-account"></i></span>
-                                                <input asp-for="UserName" style="font-size: 18px" type="text" class="form-control" placeholder="نام و نام خانوادگی" aria-describedby="username">
-                                            </div>
-                                            <span asp-validation-for="UserName"></span>
-                                        </div>
-                                        <br/>
-                                        <div class="col-md-7 col-sm-8 col-xs-12">
-                                            <div class="row">
-                                                <label style="font-size: 18px">
-                                                    عکس پروفایل :
-                                                    <br />
-                                                    <br />
-                                                    <label id="color" style="font-size: 18px;width: fit-content">
-                                                        <input asp-for="OldAvatar" checked id="CheckBox" style="font-size: 18px;" type="checkbox"> ادامه با عکس پروفایل قبلی
-                                                    </label>
-                                                    <p></p>
-                                                    <p></p>
-                                                    <img id="img" class="thumbnail" style="width: 250px;max-width: 250px" src="/UserAvatar/@(Model.AvatarName)" />
-                                                    <br />
-                                                    <span asp-validation-for="OldAvatar"></span>
-                                                    <br/>
-                                                    <img id="uploadPreview" class="thumbnail" style="width: 250px;max-width: 250px" src="" />
-                                                    <br/>
-                                                    <input asp-for="UserAvatar" id="File" type="file" onchange="PreviewImage()" class="form-control">
-                                                    <br />
-                                                    <span asp-validation-for="UserAvatar"></span>
-                                                </label>
-                                            </div>
 
-
-                                        </div>
-
-                                        <div class="col-md-7 col-sm-8 col-xs-12">
-                                            <div class="link">
-                                                <br />
-                                                <p class="text-danger" style="font-size: 18px"> * توجه : ایمیل ثبت شده غیر قابل تغییر می باشد * </p>
-                                                <br />
-                                                <a style="font-size: 18px" href="/ChangePassword"> <i class="zmdi zmdi-account"></i> تغییر کلمه عبور </a>
-                                                <a style="font-size: 18px" href="/ForgotPassword"> <i class="zmdi zmdi-lock"></i> کلمه عبور خود را فراموش کرده ام !</a>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-7 col-sm-8 col-xs-12">
-                                            <button style="font-size: 20px" class="btn btn-success"> ویرایش اطلاعات </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            }
+                            </form>
                         </div>
                     </section>
                 </div>
@@ -109,64 +65,3 @@
     </div>
 </main>
 
-@section Scripts
-{
-    <script>
-    var checkbox = document.getElementById("CheckBox");
-    var color = document.getElementById("color");
-    var file = document.getElementById("File");
-    var img = document.getElementById("img");
-    var uploadPreview = document.getElementById("uploadPreview");
-
-    if (checkbox.checked == true) {
-        file.disabled = true;
-        file.value = "";
-        color.style.color = 'black';
-        uploadPreview.style.display = "none";
-        uploadPreview.src="";
-        img.style.display = "block";
-    }
-
-    if (checkbox.checked == false) {
-        file.disabled = false;
-        color.style.color = 'gray';
-        uploadPreview.style.display = "block";
-        img.style.display = "none";
-    }
-
-
-    checkbox.addEventListener("click", () => {
-        file = document.getElementById("File");
-
-        if (checkbox.checked == true) {
-            img.style.display = "block";
-            color.style.color = 'black';
-            file.disabled = true;
-            file.value = "";
-            uploadPreview.style.display = "none";
-                uploadPreview.src = "";
-        }
-        if (checkbox.checked == false) {
-            img.style.display = "none";
-            color.style.color = 'gray';
-            uploadPreview.style.display = "block";
-            file.disabled = false;
-        }
-    });
-
-
-</script>
-
-    <script type="text/javascript">
-
-    function PreviewImage() {
-        var oFReader = new FileReader();
-        oFReader.readAsDataURL(document.getElementById("File").files[0]);
-
-        oFReader.onload = function (oFREvent) {
-            document.getElementById("uploadPreview").src = oFREvent.target.result;
-        };
-    };
-
-</script>
-}

@@ -1,155 +1,95 @@
 ﻿@page
+@using TopLearn.DataLayer.Entities.User
 @model TopLearn.Web.Pages.Admin.Users.CreateUserModel
 @{
     ViewData["Title"] = "افزودن کاربر";
+    List<Role> Roles = ViewData["Roles"] as List<Role>;
 }
 
 <div class="row">
     <div class="col-lg-12">
-        <h1 class="page-header">افزودن کاربر</h1>
+        <h1 class="page-header">افزودن کاربر جدید</h1>
     </div>
+    <!-- /.col-lg-12 -->
 </div>
 
 <div class="row">
     <form method="post" enctype="multipart/form-data">
         <div class="col-md-8">
             <div class="panel panel-primary">
-                <div class="panel-heading" >
+                <div class="panel-heading">
                     اطلاعات کاربر
                 </div>
+                <!-- /.panel-heading -->
                 <div class="panel-body">
                     <div class="form-group">
-                        <label>نام کاربری : </label>
-                        <input type="text" required asp-for="CreateUserViewModel.UserName" class="form-control">
+                        <label>نام کاربری</label>
+                        <input type="text" asp-for="CreateUserViewModel.UserName" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>ایمیل : </label>
-                        <input type="email" required asp-for="CreateUserViewModel.Email" class="form-control">
-                        <span asp-validation-for="CreateUserViewModel.Email" style="font-size: 1.5rem" class="alert-danger"></span>
+                        <label>ایمیل</label>
+                        <input type="email" asp-for="CreateUserViewModel.Email" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>کلمه عبور : </label>
-                        <input type="text" required asp-for="CreateUserViewModel.Password" class="form-control">
+                        <label>کلمه عبور</label>
+                        <input type="text" asp-for="CreateUserViewModel.Password" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>فعال : </label>
-                        <input type="checkbox" asp-for="CreateUserViewModel.IsActive" class="">
-                    </div>
-                    <div class="form-group">
-                        <label>نقش های کاربر</label>
-                        @foreach (var role in Model.CreateUserViewModel.Roles)
+                        <label>انتخاب نقش کاربر</label>
+                        @foreach (var item in Roles)
                         {
-                            @if (Model.CreateUserViewModel.SelectedRole == role.RoleId)
-                            {
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" checked required name="SelectedRole" value="@role.RoleId"> @role.RoleTitle
-                                    </label>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" required name="SelectedRole" value="@role.RoleId"> @role.RoleTitle
-                                    </label>
-                                </div>
-                            }
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="SelectedRoles" value="@item.RoleId">@item.RoleTitle
+                                </label>
+                            </div>
                         }
+
                     </div>
+                    <input type="submit" value="ذخیره اطلاعات" class="btn btn-success"/>
                 </div>
+                <!-- /.panel-body -->
             </div>
         </div>
         <div class="col-md-4">
             <div class="panel panel-default">
-                <div class="panel-heading" style="font-size: 2rem">
+                <div class="panel-heading">
                     تصویر پروفایل
                 </div>
+                <!-- /.panel-heading -->
                 <div class="panel-body">
-                    <label id="color" style="font-size: 18px; width: fit-content">
-                        <input asp-for="CreateUserViewModel.OldAvatar" checked id="CheckBox" style="font-size: 18px;" type="checkbox"> ادامه با عکس پروفایل پیش فرض
-                    </label>
-                    <p></p>
-                    <p></p>
-                    <img id="img" class="thumbnail" style="width: 250px; max-width: 250px" src="/UserAvatar/Default.jpg" />
-                    <br />
-                    <img id="uploadPreview" class="thumbnail" style="width: 250px; max-width: 250px" src="" />
-                    <br />
-                    <input asp-for="CreateUserViewModel.UserAvatar" id="File" type="file" onchange="PreviewImage()" class="form-control">
-                    <br />
-                    <span asp-validation-for="CreateUserViewModel.UserAvatar" style="font-size: 1.5rem" class="alert-danger"></span>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading" style="font-size: 2rem">
-                    ذخیره اطلاعات
-                </div>
-                <div class="panel-body">
-                    <div class="row col-md-12">
-                        <p style="text-align: center">
-                            <input style="font-size: 2rem; width: 60%;" type="submit" value="ثبت" class="btn btn-success" />
-                        </p>
+                    <img id="imgAvatar" class="thumbnail" src="/UserAvatar/Defult.jpg"/>
+                    <div class="form-group">
+                        <label>انتخاب تصویر</label>
+                        <input  type="file" asp-for="CreateUserViewModel.UserAvatar">
                     </div>
                 </div>
+                <!-- /.panel-body -->
             </div>
+       
         </div>
+     
     </form>
 </div>
-<script>
-    var checkbox = document.getElementById("CheckBox");
-    var color = document.getElementById("color");
-    var file = document.getElementById("File");
-    var img = document.getElementById("img");
-    var uploadPreview = document.getElementById("uploadPreview");
 
-    if (checkbox.checked == true) {
-        file.disabled = true;
-        file.value = "";
-        color.style.color = 'black';
-        uploadPreview.style.display = "none";
-        uploadPreview.src = "";
-        img.style.display = "block";
-    }
+@section Scripts
+{
+    <script>
+        function readURL(input) {
 
-    if (checkbox.checked == false) {
-        file.disabled = false;
-        color.style.color = 'gray';
-        uploadPreview.style.display = "block";
-        img.style.display = "none";
-    }
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
 
+                reader.onload = function(e) {
+                    $('#imgAvatar').attr('src', e.target.result);
+                }
 
-    checkbox.addEventListener("click", () => {
-        file = document.getElementById("File");
-
-        if (checkbox.checked == true) {
-            img.style.display = "block";
-            color.style.color = 'black';
-            file.disabled = true;
-            uploadPreview.src = "";
-            file.value = "";
-            uploadPreview.style.display = "none";
+                reader.readAsDataURL(input.files[0]);
+            }
         }
-        if (checkbox.checked == false) {
-            img.style.display = "none";
-            color.style.color = 'gray';
-            uploadPreview.style.display = "block";
-            file.disabled = false;
-        }
-    });
 
-
-</script>
-
-<script type="text/javascript">
-
-    function PreviewImage() {
-        var oFReader = new FileReader();
-        oFReader.readAsDataURL(document.getElementById("File").files[0]);
-
-        oFReader.onload = function (oFREvent) {
-            document.getElementById("uploadPreview").src = oFREvent.target.result;
-        };
-    };
-
-</script>
+        $("#CreateUserViewModel_UserAvatar").change(function() {
+            readURL(this);
+        });
+    </script>
+}

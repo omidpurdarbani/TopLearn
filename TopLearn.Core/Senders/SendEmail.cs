@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Web;
+﻿using System.Net.Mail;
 
 namespace TopLearn.Core.Senders
 {
     public class SendEmail
     {
-        public static void Send(string To,string Subject,string Body)
+        public static void Send(string to, string subject, string body)
         {
             MailMessage mail = new MailMessage();
             SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
-            mail.From = new MailAddress("OmidProject-Toplearn@gmail.com","Omid - TopLearn project");
-            mail.To.Add(To);
-            mail.Subject = Subject;
-            mail.Body = Body;
+            mail.From = new MailAddress("OmidProject-Toplearn@gmail.com", "Omid - TopLearn project");
+            mail.To.Add(to);
+            mail.Subject = subject;
+            mail.Body = body;
             mail.IsBodyHtml = true;
 
             //System.Net.Mail.Attachment attachment;
